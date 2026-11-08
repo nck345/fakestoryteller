@@ -1,0 +1,92 @@
+.storybook-stage::before{
+	content:'';
+	position:absolute;
+	inset:4px;
+	border:1px solid #c9b183;
+	border-radius:8px;
+	pointer-events:none;
+}
+.gold-filigree-tl,.gold-filigree-tr,.gold-filigree-bl,.gold-filigree-br{
+	position:absolute;
+	width:24px;
+	height:24px;
+	border:2px solid var(--gold);
+	pointer-events:none;
+	opacity:0.75;
+}
+.gold-filigree-tl{top:8px;left:8px;border-right:none;border-bottom:none;}
+.gold-filigree-tr{top:8px;right:8px;border-left:none;border-bottom:none;}
+.gold-filigree-bl{bottom:8px;left:8px;border-right:none;border-top:none;}
+.gold-filigree-br{bottom:8px;right:8px;border-left:none;border-top:none;}
+.film-grain{
+	position:absolute;
+	inset:0;
+	background:repeating-radial-gradient(#000 0 0.0001%,#fff 0 0.0002%);
+	opacity:0.04;
+	pointer-events:none;
+}
+.cutscene-card{
+	background:#f6f1e3;
+	border-color:#5a3e27;
+	max-width:740px;
+}
+.cutscene-header{
+	text-align:center;
+	margin-bottom:16px;
+	border-bottom:2px solid #d5c29d;
+	padding-bottom:10px;
+}
+.cutscene-header h2{font-size:1.6rem;color:#2c1b10;letter-spacing:1px;}
+.cutscene-header h4{font-size:1rem;color:var(--crimson);font-style:italic;margin-top:4px;}
+.cutscene-content{
+	display:flex;
+	gap:16px;
+	align-items:center;
+	min-height:160px;
+}
+.cutscene-portrait{
+	width:120px;
+	height:150px;
+	object-fit:contain;
+	border:2px solid #d5c29d;
+	border-radius:4px;
+	background:#fff;
+	padding:4px;
+}
+.narration-box{
+	flex:1;
+	font-size:1.15rem;
+	line-height:1.6;
+	color:#1f1610;
+	font-style:italic;
+	min-height:110px;
+}
+.cutscene-footer{
+	margin-top:18px;
+	display:flex;
+	justify-content:flex-end;
+}
+.primary-btn{
+	background:var(--crimson);
+	color:#fff;
+	border:1px solid #ad2d2d;
+	padding:8px 18px;
+	border-radius:4px;
+	font-family:inherit;
+	font-size:0.95rem;
+	cursor:pointer;
+	transition:all 0.15s;
+}
+.primary-btn:hover{background:#a62424;}
+.secondary-btn{
+	background:#3b2a1c;
+	color:#ebd8b8;
+	border:1px solid #6b4d32;
+	padding:8px 16px;
+	border-radius:4px;
+	font-family:inherit;
+	font-size:0.95rem;
+	cursor:pointer;
+	transition:all 0.15s;
+}
+.secondary-btn:hover{background:#543c28;color:#fff;}

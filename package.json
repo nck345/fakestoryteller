@@ -1,0 +1,12 @@
+{
+	"name": "fakestoryteller",
+	"version": "1.0.0",
+	"description": "The Rosalind Franklin Story - A Storyteller-inspired biographical puzzle game",
+	"main": "index.html",
+	"scripts": {
+		"start": "npx serve ."
+	},
+	"keywords": ["game", "storyteller", "puzzle", "rosalind-franklin", "stem", "dna"],
+	"author": "The girls behind her",
+	"license": "MIT"
+}

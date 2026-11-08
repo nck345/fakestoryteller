@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>The Rosalind Franklin Story - Storyteller Puzzle</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="src/css/styles.css">
+	<link rel="stylesheet" href="src/css/book.css">
+	<link rel="stylesheet" href="src/css/minigames.css">
+	<link rel="stylesheet" href="src/css/codex.css">
+</head>
+<body>
+	<div class="game-viewport">
+		<header class="game-header">
+			<div class="header-left">
+				<button class="hud-btn" id="tocBtn" title="Chapters & Acts">📖 Acts</button>
+				<button class="hud-btn" id="guideBtn" title="How to play">📜 Tutorial</button>
+				<button class="hud-btn" id="codexBtn" title="Scientific Lab Notebook">🔬 Lab Notebook</button>
+			</div>
+			<div class="game-title-wrap">
+				<div class="chapter-badge" id="chapterName">Chapter 3: The Coal Masks and the X-ray</div>
+				<h1 class="game-main-title">The Rosalind Franklin Story</h1>
+			</div>
+			<div class="header-right">
+				<button class="hud-btn" id="actIntroBtn" title="Read Act Narration">🎬 Act Intro</button>
+				<button class="hud-btn" id="hintBtn" title="Need a clue?">💡 Hint</button>
+				<button class="hud-btn" id="mgGasBtn" title="BCURA Gas Micropore Flow">⚗️ Gas Lab</button>
+				<button class="hud-btn" id="mgFocusBtn" title="X-Ray Collimator Rotary Alignment">🎯 X-Ray Dial</button>
+				<button class="hud-btn" id="mgDarkBtn" title="Photo 51 Darkroom Development">📷 Darkroom</button>
+				<button class="hud-btn" id="muteToggleBtn">🔊 Sound</button>
+			</div>
+		</header>
+
+		<main class="storybook-stage">
+			<div class="gold-filigree-tl"></div>
+			<div class="gold-filigree-tr"></div>
+			<div class="gold-filigree-bl"></div>
+			<div class="gold-filigree-br"></div>
+			<div class="act-header">
+				<h2 class="act-title" id="actTitle">Act 3.1: Rosalind Creates Gas Mask Filters</h2>
+				<p class="act-goal" id="actGoal">Goal: Rosalind creates gas mask filters!</p>
+				<div class="solved-stamp" id="solvedStamp">CROWN CLEAR</div>
+			</div>
+			<div class="comic-strip" id="panelsRow"></div>
+			<div class="stage-footer">
+				<button class="hud-btn" id="prevActBtn">← Previous Act</button>
+				<button class="hud-btn" id="resetActBtn">↺ Reset Act</button>
+				<button class="hud-btn primary next-btn" id="nextActBtn">Next Story Act →</button>
+			</div>
+		</main>
+
+		<section class="cards-tray-section">
+			<div class="tray-header">
+				<div class="filter-tabs">
+					<button class="filter-tab active" data-filter="all">All Elements</button>
+					<button class="filter-tab" data-filter="setting">Locations</button>
+					<button class="filter-tab" data-filter="character">Characters</button>
+					<button class="filter-tab" data-filter="item">Items & Tools</button>
+				</div>
+				<span style="font-size:0.8rem;color:#bda78d;">Drag cards into panels or click to place</span>
+			</div>
+			<div class="cards-tray" id="cardsTray"></div>
+		</section>
+	</div>
+
+	<div class="modal-layer hidden" id="modalLayer"></div>
+
+	<div class="modal-layer hidden" id="hintModal">
+		<div class="modal-card" style="max-width:480px;">
+			<div class="modal-header">
+				<h3>Historical Clue</h3>
+				<button class="close-btn" id="hintClose">&times;</button>
+			</div>
+			<p id="hintText" style="font-size:1.05rem;line-height:1.5;font-style:italic;color:#332215;padding:8px 0;"></p>
+		</div>
+	</div>
+
+	<div class="modal-layer hidden" id="tocModal">
+		<div class="modal-card" style="max-width:540px;">
+			<div class="modal-header">
+				<h3>Chapters & Story Acts</h3>
+				<button class="close-btn" id="tocClose">&times;</button>
+			</div>
+			<div id="tocMenu"></div>
+		</div>
+	</div>
+
+	<script src="src/js/audio.js"></script>
+	<script src="src/js/storyData.js"></script>
+	<script src="src/js/engine.js"></script>
+	<script src="src/js/minigames.js"></script>
+	<script src="src/js/codex.js"></script>
+	<script src="src/js/cutscenes.js"></script>
+	<script src="src/js/ui.js"></script>
+	<script src="src/js/app.js"></script>
+</body>
+</html>
