@@ -25,7 +25,7 @@ class StoryEngine{
 	}
 	initAct(){
 		const act=this.getCurrentAct();
-		this.framesState=Array.from({length:act.framesCount},()=>({setting:null,characters:[],items:[],result:null,isCorrect:false}));
+		this.framesState=Array.from({length:act.framesCount},()=>({setting:null,elements:[],characters:[],items:[],result:null,isCorrect:false}));
 		this.isActSolved=false;
 		this.emit('actLoaded',act);
 		this.evaluateAll();
@@ -35,39 +35,59 @@ class StoryEngine{
 		this.framesState[frameIdx].setting=settingId;
 		this.evaluateAll();
 	}
-	addCharacter(frameIdx,charId){
+	addElement(frameIdx,cardId){
 		if(!this.framesState[frameIdx]) return;
-		const list=this.framesState[frameIdx].characters;
-		if(!list.includes(charId)) list.push(charId);
+		const frame=this.framesState[frameIdx];
+		const card=STORY_CARDS[cardId];
+		if(!card) return;
+		if(card.type==='setting'){
+			this.setSetting(frameIdx,cardId);
+			return;
+		}
+		if(frame.elements.includes(cardId)) return;
+		if(frame.elements.length>=4){
+			frame.elements.shift();
+		}
+		frame.elements.push(cardId);
+		this.syncElements(frame);
 		this.evaluateAll();
 	}
-	removeCharacter(frameIdx,charId){
+	removeElement(frameIdx,cardId){
 		if(!this.framesState[frameIdx]) return;
-		this.framesState[frameIdx].characters=this.framesState[frameIdx].characters.filter(id=>id!==charId);
+		const frame=this.framesState[frameIdx];
+		frame.elements=frame.elements.filter(id=>id!==cardId);
+		this.syncElements(frame);
 		this.evaluateAll();
 	}
-	addItem(frameIdx,itemId){
-		if(!this.framesState[frameIdx]) return;
-		const list=this.framesState[frameIdx].items;
-		if(!list.includes(itemId)) list.push(itemId);
-		this.evaluateAll();
-	}
-	removeItem(frameIdx,itemId){
-		if(!this.framesState[frameIdx]) return;
-		this.framesState[frameIdx].items=this.framesState[frameIdx].items.filter(id=>id!==itemId);
-		this.evaluateAll();
+	syncElements(frame){
+		frame.characters=frame.elements.filter(id=>STORY_CARDS[id]?.type==='character');
+		frame.items=frame.elements.filter(id=>STORY_CARDS[id]?.type==='item');
 	}
 	clearFrame(frameIdx){
 		if(!this.framesState[frameIdx]) return;
-		this.framesState[frameIdx]={setting:null,characters:[],items:[],result:null,isCorrect:false};
+		this.framesState[frameIdx]={setting:null,elements:[],characters:[],items:[],result:null,isCorrect:false};
 		this.evaluateAll();
 	}
 	resetAct(){
 		const act=this.getCurrentAct();
-		this.framesState=Array.from({length:act.framesCount},()=>({setting:null,characters:[],items:[],result:null,isCorrect:false}));
+		this.framesState=Array.from({length:act.framesCount},()=>({setting:null,elements:[],characters:[],items:[],result:null,isCorrect:false}));
 		this.isActSolved=false;
 		this.evaluateAll();
 		this.emit('actReset',act);
+	}
+	autoSolveNearestFrame(){
+		const act=this.getCurrentAct();
+		const idx=this.framesState.findIndex(f=>!f.isCorrect);
+		if(idx===-1) return null;
+		const rule=act.frames[idx];
+		if(!rule||!rule.solution) return null;
+		const frame=this.framesState[idx];
+		frame.setting=rule.solution.setting;
+		frame.elements=[...(rule.solution.characters||[]),...(rule.solution.items||[])];
+		this.syncElements(frame);
+		this.evaluateAll();
+		this.emit('frameAutoSolved',{frameIndex:idx});
+		return idx;
 	}
 	evaluateFrame(frameIdx){
 		const act=this.getCurrentAct();
@@ -91,6 +111,10 @@ class StoryEngine{
 		if(targetRule&&targetRule.check(s,chars,items)){
 			frame.result={type:'success',text:targetRule.title,anim:targetRule.anim||null,sound:targetRule.sound||null};
 			frame.isCorrect=true;
+			if(targetRule.triggerGasLab&&!frame.gasLabFired){
+				frame.gasLabFired=true;
+				this.emit('gasLabTriggered',{frameIndex:frameIdx});
+			}
 			return;
 		}
 		for(let i=0;i<act.frames.length;++i){
@@ -160,11 +184,7 @@ class StoryEngine{
 	}
 	saveProgress(){
 		try{
-			const data={
-				unlocked:Array.from(this.unlockedActs),
-				ch:this.currentChapterIndex,
-				act:this.currentActIndex
-			};
+			const data={unlocked:Array.from(this.unlockedActs),ch:this.currentChapterIndex,act:this.currentActIndex};
 			localStorage.setItem('fakestoryteller_progress',JSON.stringify(data));
 		}catch(e){}
 	}
@@ -181,4 +201,3 @@ class StoryEngine{
 	}
 }
 window.storyEngine=new StoryEngine();
-

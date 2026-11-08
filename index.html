@@ -6,13 +6,30 @@
 	<title>The Rosalind Franklin Story - Storyteller Puzzle</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=KoPub+Batang:wght@400;700&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="src/css/styles.css">
 	<link rel="stylesheet" href="src/css/book.css">
 	<link rel="stylesheet" href="src/css/minigames.css">
 	<link rel="stylesheet" href="src/css/codex.css">
 </head>
 <body>
+	<div class="book-cover-screen" id="bookCoverScreen">
+		<div class="cover-book-frame">
+			<div class="cover-top-tag">A HISTORICAL STORYTELLER PUZZLE</div>
+			<div class="cover-headings">
+				<h1 class="cover-title">THE ROSALIND<br>FRANKLIN STORY</h1>
+				<div class="cover-subtitle">"The Girls Behind Her"</div>
+			</div>
+			<div class="cover-avatar-wrap">
+				<img src="assets/images/characters/rosalindfranklin.png" alt="Rosalind Franklin" class="cover-avatar">
+			</div>
+			<button class="cover-open-btn" id="coverOpenBtn">
+				<span>📖</span> OPEN STORYBOOK
+			</button>
+			<div class="cover-footer-text">MEDIA, TECHNOLOGY & SOCIETY • GROUP J • DEMO</div>
+		</div>
+	</div>
+
 	<div class="game-viewport">
 		<header class="game-header">
 			<div class="header-left">
@@ -26,10 +43,10 @@
 			</div>
 			<div class="header-right">
 				<button class="hud-btn" id="actIntroBtn" title="Read Act Narration">🎬 Act Intro</button>
-				<button class="hud-btn" id="hintBtn" title="Need a clue?">💡 Hint</button>
-				<button class="hud-btn" id="mgGasBtn" title="BCURA Gas Micropore Flow">⚗️ Gas Lab</button>
-				<button class="hud-btn" id="mgFocusBtn" title="X-Ray Collimator Rotary Alignment">🎯 X-Ray Dial</button>
-				<button class="hud-btn" id="mgDarkBtn" title="Photo 51 Darkroom Development">📷 Darkroom</button>
+				<button class="hud-btn" id="hintBtn" title="Tự động hoàn thiện panel gần nhất">💡 Hint</button>
+				<button class="hud-btn" id="mgGasBtn" style="display:none;" title="BCURA Gas Micropore Flow">⚗️ Gas Lab</button>
+				<button class="hud-btn" id="mgFocusBtn" style="display:none;" title="X-Ray Collimator Rotary Alignment">🎯 X-Ray Dial</button>
+				<button class="hud-btn" id="mgDarkBtn" style="display:none;" title="Photo 51 Darkroom Development">📷 Darkroom</button>
 				<button class="hud-btn" id="muteToggleBtn">🔊 Sound</button>
 			</div>
 		</header>
@@ -60,23 +77,13 @@
 					<button class="filter-tab" data-filter="character">Characters</button>
 					<button class="filter-tab" data-filter="item">Items & Tools</button>
 				</div>
-				<span style="font-size:0.8rem;color:#bda78d;">Drag cards into panels or click to place</span>
+				<span style="font-size:0.75rem;color:#bda78d;font-family:'KoPub Batang',serif;">Kéo thả thẻ bài vào khung hoặc bấm để chọn</span>
 			</div>
 			<div class="cards-tray" id="cardsTray"></div>
 		</section>
 	</div>
 
 	<div class="modal-layer hidden" id="modalLayer"></div>
-
-	<div class="modal-layer hidden" id="hintModal">
-		<div class="modal-card" style="max-width:480px;">
-			<div class="modal-header">
-				<h3>Historical Clue</h3>
-				<button class="close-btn" id="hintClose">&times;</button>
-			</div>
-			<p id="hintText" style="font-size:1.05rem;line-height:1.5;font-style:italic;color:#332215;padding:8px 0;"></p>
-		</div>
-	</div>
 
 	<div class="modal-layer hidden" id="tocModal">
 		<div class="modal-card" style="max-width:540px;">
@@ -98,4 +105,3 @@
 	<script src="src/js/app.js"></script>
 </body>
 </html>
-

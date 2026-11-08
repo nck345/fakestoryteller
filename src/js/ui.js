@@ -9,6 +9,8 @@ class UIController{
 		window.storyEngine.on('stateUpdated',data=>this.updateFramesState(data));
 		window.storyEngine.on('actSolved',act=>this.onActSolved(act));
 		window.storyEngine.on('actReset',act=>this.renderAct(act));
+		window.storyEngine.on('gasLabTriggered',data=>this.onGasLabTriggered(data));
+		window.storyEngine.on('frameAutoSolved',data=>this.onFrameAutoSolved(data));
 	}
 	renderAct(act){
 		const titleEl=document.getElementById('actTitle');
@@ -22,7 +24,22 @@ class UIController{
 		this.renderFrames(act.framesCount);
 		this.renderTray(act.availableCards);
 		this.updateNavigation();
+		this.updateHeaderMinigames(act);
 		if(window.audioMgr) window.audioMgr.playBGM(act.bgm||'paris');
+	}
+	updateHeaderMinigames(act){
+		const mgGas=document.getElementById('mgGasBtn');
+		const mgFocus=document.getElementById('mgFocusBtn');
+		const mgDark=document.getElementById('mgDarkBtn');
+		if(mgGas) mgGas.style.display='none';
+		if(mgFocus){
+			const showFocus=(act.id==='act3_3'||act.id==='act4_2'||act.id==='act4_3');
+			mgFocus.style.display=showFocus?'inline-flex':'none';
+		}
+		if(mgDark){
+			const showDark=(act.id==='act4_4');
+			mgDark.style.display=showDark?'inline-flex':'none';
+		}
 	}
 	renderFrames(count){
 		const container=document.getElementById('panelsRow');
@@ -37,11 +54,14 @@ class UIController{
 				<button class="frame-clear-btn" title="Clear Frame">&times;</button>
 				<div class="frame-canvas" data-frame-index="${i}">
 					<div class="frame-bg"></div>
-					<div class="frame-actors"></div>
-					<div class="frame-items"></div>
+					<div class="frame-elements-row"></div>
 					<div class="frame-reaction-overlay"></div>
+					<div class="rosalind-speech hidden" id="speech_${i}">
+						<img src="assets/images/characters/rosalindfranklin.png" alt="Rosalind" class="speech-avatar">
+						<span>Rosalind: "Hãy thử làm thí nghiệm nhé!"</span>
+					</div>
 				</div>
-				<div class="frame-caption">Drag elements here...</div>
+				<div class="frame-caption">Kéo thả bối cảnh, nhân vật hoặc đồ vật vào đây...</div>
 			`;
 			this.attachFrameEvents(frameEl,i);
 			container.appendChild(frameEl);
@@ -75,10 +95,8 @@ class UIController{
 		if(!card) return;
 		if(card.type==='setting'){
 			window.storyEngine.setSetting(frameIdx,card.id);
-		}else if(card.type==='character'){
-			window.storyEngine.addCharacter(frameIdx,card.id);
-		}else if(card.type==='item'){
-			window.storyEngine.addItem(frameIdx,card.id);
+		}else{
+			window.storyEngine.addElement(frameIdx,card.id);
 		}
 		if(window.audioMgr) window.audioMgr.playSFX('paper_slide');
 	}
@@ -139,8 +157,7 @@ class UIController{
 			const frameEl=frameEls[idx];
 			if(!frameEl) return;
 			const bgEl=frameEl.querySelector('.frame-bg');
-			const actorsEl=frameEl.querySelector('.frame-actors');
-			const itemsEl=frameEl.querySelector('.frame-items');
+			const elementsRow=frameEl.querySelector('.frame-elements-row');
 			const overlayEl=frameEl.querySelector('.frame-reaction-overlay');
 			const captionEl=frameEl.querySelector('.frame-caption');
 			if(f.setting){
@@ -151,41 +168,32 @@ class UIController{
 				bgEl.style.backgroundImage='none';
 				bgEl.style.opacity='0';
 			}
-			actorsEl.innerHTML='';
-			f.characters.forEach(cId=>{
-				const c=STORY_CARDS[cId];
-				const charNode=document.createElement('div');
-				charNode.className='actor-sprite';
-				charNode.title=`Click to remove ${c.name}`;
-				charNode.innerHTML=`<img src="${c.image}" alt="${c.name}">`;
-				charNode.onclick=e=>{
-					e.stopPropagation();
-					window.storyEngine.removeCharacter(idx,cId);
-					if(window.audioMgr) window.audioMgr.playSFX('button_click');
-				};
-				actorsEl.appendChild(charNode);
-			});
-			itemsEl.innerHTML='';
-			f.items.forEach(iId=>{
-				const it=STORY_CARDS[iId];
-				const itemNode=document.createElement('div');
-				itemNode.className='item-sprite';
-				itemNode.title=`Click to remove ${it.name}`;
-				itemNode.innerHTML=`<img src="${it.image}" alt="${it.name}">`;
-				itemNode.onclick=e=>{
-					e.stopPropagation();
-					window.storyEngine.removeItem(idx,iId);
-					if(window.audioMgr) window.audioMgr.playSFX('button_click');
-				};
-				itemsEl.appendChild(itemNode);
-			});
+			elementsRow.innerHTML='';
 			overlayEl.innerHTML='';
 			frameEl.classList.remove('state-success','state-fail');
+			const hasActionAnim=Boolean(f.result&&f.result.anim);
+			if(hasActionAnim){
+				elementsRow.style.display='none';
+				overlayEl.innerHTML=`<img src="${f.result.anim}" class="anim-reaction" alt="Action Animation">`;
+			}else{
+				elementsRow.style.display='flex';
+				f.elements.forEach(elId=>{
+					const card=STORY_CARDS[elId];
+					if(!card) return;
+					const spriteNode=document.createElement('div');
+					spriteNode.className='placed-entity-sprite';
+					spriteNode.title=`Bấm để gỡ ${card.name}`;
+					spriteNode.innerHTML=`<img src="${card.image}" alt="${card.name}">`;
+					spriteNode.onclick=e=>{
+						e.stopPropagation();
+						window.storyEngine.removeElement(idx,elId);
+						if(window.audioMgr) window.audioMgr.playSFX('button_click');
+					};
+					elementsRow.appendChild(spriteNode);
+				});
+			}
 			if(f.result){
 				captionEl.textContent=f.result.text;
-				if(f.result.anim){
-					overlayEl.innerHTML=`<img src="${f.result.anim}" class="anim-reaction" alt="Action Animation">`;
-				}
 				if(f.result.type==='fail'){
 					frameEl.classList.add('state-fail');
 					if(f.result.sound&&window.audioMgr) window.audioMgr.playSFX(f.result.sound);
@@ -193,7 +201,7 @@ class UIController{
 					frameEl.classList.add('state-success');
 				}
 			}else{
-				captionEl.textContent='Drag settings, characters, or items here...';
+				captionEl.textContent='Kéo thả bối cảnh, nhân vật hoặc đồ vật vào đây...';
 			}
 		});
 		const nextBtn=document.getElementById('nextActBtn');
@@ -203,6 +211,31 @@ class UIController{
 			}else{
 				nextBtn.classList.remove('ready');
 			}
+		}
+	}
+	onGasLabTriggered(data){
+		const speech=document.getElementById(`speech_${data.frameIndex}`);
+		if(speech){
+			speech.classList.remove('hidden');
+			if(window.audioMgr) window.audioMgr.playSFX('focus_lock');
+			setTimeout(()=>{
+				speech.classList.add('hidden');
+				if(window.minigameCtrl) window.minigameCtrl.openGasMaze();
+			},1200);
+		}else{
+			if(window.minigameCtrl) window.minigameCtrl.openGasMaze();
+		}
+	}
+	onFrameAutoSolved(data){
+		const frameEls=document.querySelectorAll('.comic-frame');
+		const target=frameEls[data.frameIndex];
+		if(target){
+			target.classList.add('auto-solved-flash');
+			setTimeout(()=>target.classList.remove('auto-solved-flash'),900);
+		}
+		if(window.audioMgr){
+			window.audioMgr.playSFX('paper_slide');
+			window.audioMgr.playSFX('goal_success');
 		}
 	}
 	onActSolved(act){
@@ -253,4 +286,3 @@ class UIController{
 	}
 }
 window.uiCtrl=new UIController();
-

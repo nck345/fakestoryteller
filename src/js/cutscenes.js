@@ -12,50 +12,59 @@ class CutsceneController{
 			this.container.classList.add('hidden');
 			this.container.innerHTML='';
 		}
+		const coverEl=document.getElementById('bookCoverScreen');
+		if(coverEl) coverEl.classList.add('hidden');
 		if(window.audioMgr) window.audioMgr.playBGM(window.storyEngine?.getCurrentAct()?.bgm||'paris');
 	}
 	playTutorial(onComplete){
 		if(!this.container) return;
 		this.container.classList.remove('hidden');
-		const text="Discover Rosalind Franklin's story by arranging settings, characters, and objects inside the comic panels. Read each act's introduction, then build the historical events in sequence. Drag cards into a panel, or click to slot them. Click placed items to remove them. When every panel is correct, the next act unlocks!";
+		const text="Khám phá câu chuyện của Rosalind Franklin bằng cách sắp xếp bối cảnh, nhân vật và đồ vật vào các ô tranh truyện. Hãy đọc kỹ mục tiêu của mỗi màn chơi, sau đó xây dựng chuỗi sự kiện theo đúng trình tự lịch sử. Bạn có thể kéo thả thẻ bài vào khung, hoặc nhấp chọn thẻ bài rồi nhấp vào khung. Nhấp vào nhân vật hoặc đồ vật bên trong khung để gỡ bỏ. Khi tất cả các khung hình đều chính xác, màn chơi tiếp theo sẽ được mở khóa!";
 		this.renderCutscene({
-			title:"How to Play: Storyteller's Guide",
+			title:"Hướng Dẫn Cách Chơi: Storyteller",
 			subtitle:"The Rosalind Franklin Story",
 			image:"assets/images/characters/rosalindfranklin.png",
 			narration:text,
 			sound:'projector_loop',
-			onComplete:onComplete
+			btnText:'Tiếp tục →',
+			onComplete:()=>{
+				const act=window.storyEngine.getCurrentAct();
+				this.playActIntro(act,onComplete);
+			}
 		});
 	}
 	playActIntro(act,onComplete){
-		if(!this.container||!act.introText){
-			if(onComplete) onComplete();
-			return;
-		}
+		if(!this.container) return;
 		this.container.classList.remove('hidden');
+		const intro=act.introText||`Chào mừng bạn đến với Act ${act.actNumber}: ${act.title}. Mục tiêu của màn chơi: ${act.goal}`;
 		this.renderCutscene({
 			title:`Act ${act.actNumber}: ${act.title}`,
 			subtitle:act.goal,
 			image:null,
-			narration:act.introText,
+			narration:intro,
 			sound:'projector_loop',
-			onComplete:onComplete
+			btnText:'Bắt đầu màn chơi →',
+			onComplete:()=>{
+				this.close();
+				if(onComplete) onComplete();
+			}
 		});
 	}
 	playEnding(onComplete){
 		if(!this.container) return;
 		this.container.classList.remove('hidden');
-		const epilogueText="From coal to DNA, Rosalind Franklin investigated structures hidden from view. Her careful experiments helped lay the foundations for the greatest molecular discoveries that followed. Her scientific story extends far beyond a single photograph - reminding us to recognize the people, the discipline, and the empirical truth behind every discovery.";
+		const epilogueText="Từ than đá cho đến DNA, Rosalind Franklin đã kiên định khám phá những cấu trúc bí ẩn nằm sâu bên trong vật chất. Những thí nghiệm cẩn trọng và chuẩn xác của bà đã đặt nền móng vững chắc cho các khám phá sinh học vĩ đại nhất của nhân loại. Di sản khoa học của bà vượt xa khỏi một tấm ảnh duy nhất - nhắc nhở chúng ta hãy luôn tôn vinh con người, kỷ luật nghiên cứu và sự thật thực nghiệm đằng sau mỗi phát minh.";
 		if(window.audioMgr){
 			window.audioMgr.playBGM('dreamy');
 			window.audioMgr.playSFX('applause');
 		}
 		this.renderCutscene({
-			title:"Epilogue: The Shoulders of Giants",
-			subtitle:"In Memory of Rosalind Franklin (1920 - 1958)",
+			title:"Vĩ Thanh: Đứng Trên Vai Những Người Khổng Lồ",
+			subtitle:"Tưởng nhớ Rosalind Franklin (1920 - 1958)",
 			image:"assets/images/characters/rosalindfranklin.png",
 			narration:epilogueText,
 			sound:null,
+			btnText:'Quay lại bàn chơi',
 			isEnding:true,
 			onComplete:onComplete
 		});
@@ -74,7 +83,7 @@ class CutsceneController{
 					<div class="narration-box" id="cutsceneText"></div>
 				</div>
 				<div class="cutscene-footer">
-					<button class="primary-btn" id="skipCutsceneBtn">${opts.isEnding?'Return to Storybook':'Begin Act →'}</button>
+					<button class="primary-btn" id="skipCutsceneBtn">${opts.btnText||'Bắt đầu màn chơi →'}</button>
 				</div>
 			</div>
 		`;
@@ -88,7 +97,7 @@ class CutsceneController{
 			}else{
 				clearInterval(this.typingInterval);
 			}
-		},18);
+		},16);
 		const btn=document.getElementById('skipCutsceneBtn');
 		btn.onclick=()=>{
 			if(charIdx<fullText.length){
@@ -96,11 +105,9 @@ class CutsceneController{
 				targetEl.textContent=fullText;
 				clearInterval(this.typingInterval);
 			}else{
-				this.close();
 				if(opts.onComplete) opts.onComplete();
 			}
 		};
 	}
 }
 window.cutsceneCtrl=new CutsceneController();
-

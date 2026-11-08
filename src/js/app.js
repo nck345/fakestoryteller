@@ -3,6 +3,16 @@ document.addEventListener('DOMContentLoaded',()=>{
 	window.minigameCtrl.init(modalLayer);
 	window.codexCtrl.init(modalLayer);
 	window.cutsceneCtrl.init(modalLayer);
+	const coverBtn=document.getElementById('coverOpenBtn');
+	if(coverBtn){
+		coverBtn.onclick=()=>{
+			if(window.audioMgr){
+				window.audioMgr.ensureContext();
+				window.audioMgr.playSFX('button_click');
+			}
+			window.cutsceneCtrl.playTutorial();
+		};
+	}
 	const muteBtn=document.getElementById('muteToggleBtn');
 	if(muteBtn){
 		muteBtn.onclick=()=>{
@@ -18,17 +28,13 @@ document.addEventListener('DOMContentLoaded',()=>{
 	const nextBtn=document.getElementById('nextActBtn');
 	if(nextBtn) nextBtn.onclick=()=>window.storyEngine.nextAct();
 	const hintBtn=document.getElementById('hintBtn');
-	const hintModal=document.getElementById('hintModal');
-	const hintText=document.getElementById('hintText');
-	const hintClose=document.getElementById('hintClose');
-	if(hintBtn&&hintModal&&hintText){
+	if(hintBtn){
 		hintBtn.onclick=()=>{
-			const act=window.storyEngine.getCurrentAct();
-			hintText.textContent=act.hint||'Arrange elements in chronological order.';
-			hintModal.classList.remove('hidden');
-			if(window.audioMgr) window.audioMgr.playSFX('button_click');
+			const solvedIdx=window.storyEngine.autoSolveNearestFrame();
+			if(solvedIdx===null){
+				if(window.audioMgr) window.audioMgr.playSFX('chime');
+			}
 		};
-		if(hintClose) hintClose.onclick=()=>hintModal.classList.add('hidden');
 	}
 	const introCutsceneBtn=document.getElementById('actIntroBtn');
 	if(introCutsceneBtn){
@@ -79,4 +85,3 @@ document.addEventListener('DOMContentLoaded',()=>{
 	window.addEventListener('keydown',unlockAudio);
 	window.addEventListener('touchstart',unlockAudio);
 });
-
