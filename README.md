@@ -110,3 +110,4 @@ The project is structured with `index.html` at the repository root. To publish o
 1. In your GitHub repository settings, navigate to **Pages**.
 2. Select **Branch: main** and folder **/(root)**.
 3. Click **Save**. The game will be live at `https://<username>.github.io/fakestoryteller/`.
+

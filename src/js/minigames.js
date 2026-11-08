@@ -279,3 +279,4 @@ class MinigameController{
 	}
 }
 window.minigameCtrl=new MinigameController();
+
