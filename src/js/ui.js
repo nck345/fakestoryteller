@@ -18,7 +18,7 @@ class UIController{
 		const stampEl=document.getElementById('solvedStamp');
 		const chNameEl=document.getElementById('chapterName');
 		if(titleEl) titleEl.textContent=`Act ${act.actNumber}: ${act.title}`;
-		if(goalEl) goalEl.textContent=act.subtitle||act.introText||act.goal;
+		if(goalEl) goalEl.textContent=act.goal;
 		if(chNameEl) chNameEl.textContent=window.storyEngine.getCurrentChapter().title;
 		if(stampEl) stampEl.classList.remove('visible');
 		this.renderFrames(act.framesCount);

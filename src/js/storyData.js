@@ -58,8 +58,8 @@ const STORY_CARDS={
 };
 
 const exactMatch=(s,chars,items,reqSetting,reqChars,reqItems)=>{
-	if(reqSetting&&s!==reqSetting) return false;
-	if(!reqSetting&&s) return false;
+	if(!s||!reqSetting) return false;
+	if(Array.isArray(reqSetting)?!reqSetting.includes(s):s!==reqSetting) return false;
 	if(chars.length!==reqChars.length) return false;
 	for(let i=0;i<reqChars.length;++i) if(!chars.includes(reqChars[i])) return false;
 	if(items.length!==reqItems.length) return false;
@@ -79,7 +79,7 @@ const CHAPTERS_DATA=[
 				chapterId:'ch3',
 				actNumber:'3.1',
 				title:'Rosalind Creates Gas Mask Filters',
-				goal:'Protective filters are an important wartime concern. At BCURA, Rosalind investigates how coal porosity affects gas absorption.',
+				goal:'Rosalind creates gas mask filters!',
 				bgm:'wartime',
 				framesCount:3,
 				availableCards:['bombed_london','bcura_lab','rosalind','soldiers','helium_cylinder','coal_sample','pore_structure','gas_mask'],
@@ -143,7 +143,7 @@ const CHAPTERS_DATA=[
 				chapterId:'ch3',
 				actNumber:'3.2',
 				title:'Rosalind Moves to Paris',
-				goal:'After her coal research, Rosalind turns to mentor Adrienne Weill to find research connections and opportunities in France.',
+				goal:'Rosalind moves to Paris!',
 				bgm:'paris',
 				framesCount:4,
 				availableCards:['paris_station','paris_lab','rosalind','adrienne_weill','jacques_mering','sealed_letter','baggage'],
@@ -152,16 +152,16 @@ const CHAPTERS_DATA=[
 				introText:'After her coal research, Rosalind begins looking for a new opportunity. She turns to Adrienne Weill, who can help her find research connections in France.',
 				frames:[
 					{
-						check:(s,chars,items)=>exactMatch(null,chars,items,null,['rosalind','adrienne_weill'],['sealed_letter']),
-						solution:{setting:null,characters:['rosalind','adrienne_weill'],items:['sealed_letter']},
+						check:(s,chars,items)=>exactMatch(s,chars,items,'paris_lab',['rosalind','adrienne_weill'],['sealed_letter']),
+						solution:{setting:'paris_lab',characters:['rosalind','adrienne_weill'],items:['sealed_letter']},
 						shortOutcome:'Letter to Adrienne',
 						title:'Rosalind writes to mentor Adrienne Weill: "Find a job for someone who knows very little chemistry but a lot about holes in coal."',
 						anim:'assets/images/animations/C3_2_Rosalind_Writes_Letter_ACTION_TRANSPARENT.gif',
 						sound:'pencil_writing'
 					},
 					{
-						check:(s,chars,items)=>exactMatch(null,chars,items,null,['adrienne_weill','jacques_mering'],['sealed_letter']),
-						solution:{setting:null,characters:['adrienne_weill','jacques_mering'],items:['sealed_letter']},
+						check:(s,chars,items)=>exactMatch(s,chars,items,'paris_lab',['adrienne_weill','jacques_mering'],['sealed_letter']),
+						solution:{setting:'paris_lab',characters:['adrienne_weill','jacques_mering'],items:['sealed_letter']},
 						shortOutcome:'Recommendation to Mering',
 						title:'Adrienne Weill stamps her recommendation and introduces Rosalind to Jacques Mering in Paris.',
 						anim:'assets/images/animations/C3_2_Document_Stamp_Preview_Rosalind_ACTION_TRANSPARENT.gif',
@@ -206,7 +206,7 @@ const CHAPTERS_DATA=[
 				chapterId:'ch3',
 				actNumber:'3.3',
 				title:'Rosalind Classifies Carbon',
-				goal:'Rosalind explores hidden carbon structures by capturing and analyzing how X-rays scatter onto photographic film.',
+				goal:'Rosalind classifies carbon into Graphitizing and Non-graphitizing carbon!',
 				bgm:'tension',
 				framesCount:3,
 				availableCards:['paris_lab','rosalind','male_scientists','xray_beam','amorphous_carbon','film','math_models','carbon_chart'],
@@ -266,7 +266,7 @@ const CHAPTERS_DATA=[
 				chapterId:'ch3',
 				actNumber:'3.4',
 				title:"Rosalind's Belief",
-				goal:'Amid Parisian lab debates and alpine hikes, Rosalind articulates her personal creed on scientific dedication and faith.',
+				goal:"Rosalind's belief!",
 				bgm:'paris',
 				framesCount:3,
 				availableCards:['paris_lab','snow_mountains','rosalind','male_scientists','lunch','desk','sealed_letter'],
@@ -333,7 +333,7 @@ const CHAPTERS_DATA=[
 				chapterId:'ch4',
 				actNumber:'4.1',
 				title:'Rosalind Begins DNA Research and Isolation',
-				goal:'Rosalind joins King’s College London to lead DNA research, facing institutional barriers and administrative ambiguity.',
+				goal:'Rosalind begins DNA research and isolation!',
 				bgm:'mysterious',
 				framesCount:4,
 				availableCards:['randall_office','common_room','basement_room','rosalind_chemist','john_randall','maurice_wilkins','assignment_letter','lunch'],
@@ -388,7 +388,7 @@ const CHAPTERS_DATA=[
 				chapterId:'ch4',
 				actNumber:'4.2',
 				title:'Rosalind Separates Two DNA States',
-				goal:'Rosalind investigates whether DNA structure depends on moisture, setting up controlled humidity experiments.',
+				goal:'Rosalind separates two DNA states!',
 				bgm:'mysterious',
 				framesCount:4,
 				availableCards:['basement_lab','rosalind_chemist','dna_fibers','xray_camera','dry_chamber','humid_chamber','form_a','form_b'],
@@ -438,7 +438,7 @@ const CHAPTERS_DATA=[
 				chapterId:'ch4',
 				actNumber:'4.3',
 				title:'Watson and Crick Are Stopped from Building Their Model',
-				goal:'Watson and Crick build an early DNA model, but a convincing arrangement must agree with experimental findings.',
+				goal:'Watson and Crick are stopped from building their model!',
 				bgm:'tension',
 				framesCount:4,
 				availableCards:['lecture_hall','cambridge_lab','rosalind_chemist','james_watson','francis_crick','lawrence_bragg','wire_model','water'],
@@ -498,7 +498,7 @@ const CHAPTERS_DATA=[
 				chapterId:'ch4',
 				actNumber:'4.4',
 				title:'Rosalind Produces Photo 51 and Decodes It',
-				goal:'A clear photograph requires a carefully prepared sample, controlled conditions, and a continuous 62-hour X-ray exposure.',
+				goal:'Rosalind produces Photo 51 and decodes it!',
 				bgm:'mysterious',
 				framesCount:5,
 				availableCards:['basement_lab','darkroom','rosalind_chemist','raymond_gosling','humid_chamber','xray_camera','stopwatch','film','photo_51','notebook'],
@@ -565,7 +565,7 @@ const CHAPTERS_DATA=[
 				chapterId:'ch4',
 				actNumber:'4.5',
 				title:"Rosalind's Double Helix Model Is Completed with Noble Scientific Grace",
-				goal:'Photograph 51 and Franklin’s report reach Watson and Crick, helping them complete their double-helix model.',
+				goal:"Rosalind's double helix model is completed with noble scientific grace!",
 				bgm:'sad',
 				framesCount:5,
 				availableCards:['kings_college','cavendish_lab','rosalind_chemist','maurice_wilkins','james_watson','francis_crick','max_perutz','nature_publisher','photo_51','research_report','double_helix_model','papers','baggage'],
@@ -595,15 +595,15 @@ const CHAPTERS_DATA=[
 						sound:'wire_collapse'
 					},
 					{
-						check:(s,chars,items)=>exactMatch(null,chars,items,null,['nature_publisher'],['papers']),
-						solution:{setting:null,characters:['nature_publisher'],items:['papers']},
+						check:(s,chars,items)=>exactMatch(s,chars,items,['cavendish_lab','kings_college'],['nature_publisher'],['papers']),
+						solution:{setting:'cavendish_lab',characters:['nature_publisher'],items:['papers']},
 						shortOutcome:'Nature April 1953 publication',
 						title:'Nature publishes Watson and Crick’s model alongside Franklin and Gosling’s foundational paper in April 1953.',
 						sound:'applause'
 					},
 					{
-						check:(s,chars,items)=>exactMatch(null,chars,items,null,['rosalind_chemist'],['double_helix_model','baggage']),
-						solution:{setting:null,characters:['rosalind_chemist'],items:['double_helix_model','baggage']},
+						check:(s,chars,items)=>exactMatch(s,chars,items,['kings_college','cavendish_lab'],['rosalind_chemist'],['double_helix_model','baggage']),
+						solution:{setting:'kings_college',characters:['rosalind_chemist'],items:['double_helix_model','baggage']},
 						shortOutcome:'Birkbeck virus research',
 						title:'With scientific dignity, Rosalind acknowledges the completed model and departs for Birkbeck to study viruses.',
 						sound:'goal_success'

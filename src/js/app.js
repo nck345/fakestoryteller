@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded',()=>{
 			}
 			const coverScreen=document.getElementById('bookCoverScreen');
 			if(coverScreen) coverScreen.classList.add('hidden');
+			window.storyEngine.unlockedMinigames.clear();
+			window.storyEngine.saveProgress();
+			window.uiCtrl.updateMinigamesHub();
 			window.storyEngine.goToAct(0,0,false);
 			window.cutsceneCtrl.playTutorial();
 		};

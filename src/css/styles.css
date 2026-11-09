@@ -11,7 +11,7 @@
 	--panel-bg:#ebe2cb;
 	--card-bg:#ffffff;
 	--shadow-soft:0 4px 16px rgba(0,0,0,0.35);
-	--char-h:clamp(130px, 22vh, 175px);
+	--char-h:clamp(195px, 32vh, 260px);
 }
 *{box-sizing:border-box;margin:0;padding:0;font-style:normal!important;}
 html,body{
@@ -221,7 +221,7 @@ html,body{
 }
 .frame-elements-row{
 	position:absolute;
-	bottom:6px;
+	bottom:32px;
 	left:4px;
 	right:4px;
 	height:auto;
@@ -261,67 +261,67 @@ html,body{
 	height:calc(var(--char-h) * 0.94)!important;
 }
 .placed-entity-sprite.item-helium_cylinder img{
-	height:var(--char-h)!important;
+	height:calc(var(--char-h) * 0.80)!important;
 }
 .placed-entity-sprite.item-coal_sample img{
-	height:calc(var(--char-h) * 0.5)!important;
-}
-.placed-entity-sprite.item-gas_mask img{
-	height:calc(var(--char-h) * 0.5)!important;
-}
-.placed-entity-sprite.item-pore_structure img{
-	height:calc(var(--char-h) * 0.52)!important;
-}
-.placed-entity-sprite.item-lunch img{
-	height:calc(var(--char-h) * 0.42)!important;
-}
-.placed-entity-sprite.item-water img{
 	height:calc(var(--char-h) * 0.40)!important;
 }
+.placed-entity-sprite.item-gas_mask img{
+	height:calc(var(--char-h) * 0.40)!important;
+}
+.placed-entity-sprite.item-pore_structure img{
+	height:calc(var(--char-h) * 0.42)!important;
+}
+.placed-entity-sprite.item-lunch img{
+	height:calc(var(--char-h) * 0.34)!important;
+}
+.placed-entity-sprite.item-water img{
+	height:calc(var(--char-h) * 0.32)!important;
+}
 .placed-entity-sprite.item-stopwatch img{
-	height:calc(var(--char-h) * 0.38)!important;
+	height:calc(var(--char-h) * 0.30)!important;
 }
 .placed-entity-sprite.item-dna_fibers img{
-	height:calc(var(--char-h) * 0.46)!important;
+	height:calc(var(--char-h) * 0.37)!important;
 }
 .placed-entity-sprite.item-sealed_letter img,
 .placed-entity-sprite.item-assignment_letter img,
 .placed-entity-sprite.item-notebook img,
 .placed-entity-sprite.item-papers img,
 .placed-entity-sprite.item-research_report img{
-	height:calc(var(--char-h) * 0.46)!important;
+	height:calc(var(--char-h) * 0.37)!important;
 }
 .placed-entity-sprite.item-form_a img,
 .placed-entity-sprite.item-form_b img,
 .placed-entity-sprite.item-photo_51 img{
-	height:calc(var(--char-h) * 0.52)!important;
+	height:calc(var(--char-h) * 0.42)!important;
 }
 .placed-entity-sprite.item-amorphous_carbon img{
-	height:calc(var(--char-h) * 0.46)!important;
+	height:calc(var(--char-h) * 0.37)!important;
 }
 .placed-entity-sprite.item-carbon_chart img,
 .placed-entity-sprite.item-math_models img{
-	height:calc(var(--char-h) * 0.55)!important;
+	height:calc(var(--char-h) * 0.44)!important;
 }
 .placed-entity-sprite.item-xray_beam img{
-	height:calc(var(--char-h) * 0.85)!important;
+	height:calc(var(--char-h) * 0.68)!important;
 }
 .placed-entity-sprite.item-xray_camera img{
-	height:calc(var(--char-h) * 0.70)!important;
+	height:calc(var(--char-h) * 0.56)!important;
 }
 .placed-entity-sprite.item-dry_chamber img,
 .placed-entity-sprite.item-humid_chamber img{
-	height:calc(var(--char-h) * 0.75)!important;
+	height:calc(var(--char-h) * 0.60)!important;
 }
 .placed-entity-sprite.item-wire_model img,
 .placed-entity-sprite.item-double_helix_model img{
-	height:calc(var(--char-h) * 0.80)!important;
+	height:calc(var(--char-h) * 0.64)!important;
 }
 .placed-entity-sprite.item-desk img{
-	height:calc(var(--char-h) * 0.80)!important;
+	height:calc(var(--char-h) * 0.64)!important;
 }
 .placed-entity-sprite.item-baggage img{
-	height:calc(var(--char-h) * 0.55)!important;
+	height:calc(var(--char-h) * 0.44)!important;
 }
 .char-question-mark{
 	position:absolute;
@@ -564,31 +564,32 @@ html,body{
 	position:absolute;
 	top:calc(100% + 6px);
 	right:0;
-	background:var(--leather-dark);
-	border:1.5px solid var(--gold);
+	background:#22150c!important;
+	border:2px solid var(--gold);
 	border-radius:6px;
-	padding:6px;
-	min-width:210px;
-	box-shadow:0 6px 18px rgba(0,0,0,0.5);
+	padding:8px;
+	min-width:250px;
+	box-shadow:0 10px 30px rgba(0,0,0,0.9);
 	display:flex;
 	flex-direction:column;
 	gap:6px;
-	z-index:100;
+	z-index:2000;
 }
 .minigames-dropdown.hidden{display:none;}
 .mg-drop-item{
-	background:rgba(255,255,255,0.06);
-	border:1px solid rgba(212,168,83,0.3);
-	color:var(--cream);
-	padding:8px 12px;
+	background:#382214!important;
+	border:1px solid rgba(212,175,55,0.4);
+	color:#fdf8ec!important;
+	padding:10px 14px;
 	border-radius:4px;
 	text-align:left;
-	font-size:0.85rem;
+	font-size:0.9rem;
+	font-family:'KoPub Batang',serif;
 	cursor:pointer;
 	transition:all 0.15s;
 }
 .mg-drop-item:hover{
-	background:var(--gold);
-	color:var(--leather-dark);
+	background:var(--gold)!important;
+	color:#1a110a!important;
 	font-weight:700;
 }

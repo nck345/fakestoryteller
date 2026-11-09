@@ -92,6 +92,9 @@ class StoryEngine{
 		frame.setting=rule.solution.setting;
 		frame.elements=[...(rule.solution.characters||[]),...(rule.solution.items||[])];
 		frame.gasLabSolved=true;
+		if(act.id==='act3_1'&&idx===1) this.unlockedMinigames.add('gas_lab');
+		if((act.id==='act3_3'&&idx===1)||(act.id==='act4_2'&&idx===2)) this.unlockedMinigames.add('xray_dial');
+		if(act.id==='act4_4'&&idx===2) this.unlockedMinigames.add('darkroom');
 		this.syncElements(frame);
 		this.evaluateAll();
 		this.emit('frameAutoSolved',{frameIndex:idx});
@@ -128,9 +131,6 @@ class StoryEngine{
 				}
 				frame.result={type:'success',text:targetRule.title,anim:targetRule.anim||null,sound:targetRule.sound||null,showQuestion:false};
 				frame.isCorrect=true;
-				if(act.id==='act3_1'&&frameIdx===1) this.unlockedMinigames.add('gas_lab');
-				if((act.id==='act3_3'&&frameIdx===1)||(act.id==='act4_2'&&frameIdx===2)) this.unlockedMinigames.add('xray_dial');
-				if(act.id==='act4_4'&&frameIdx===2) this.unlockedMinigames.add('darkroom');
 				this.saveProgress();
 				return;
 			}
