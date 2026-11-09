@@ -223,7 +223,7 @@ html,body{
 	bottom:4px;
 	left:4px;
 	right:4px;
-	height:70%;
+	height:62%;
 	display:flex;
 	justify-content:center;
 	align-items:flex-end;
@@ -232,7 +232,7 @@ html,body{
 }
 .placed-entity-sprite{
 	height:100%;
-	max-width:28%;
+	max-width:25%;
 	display:flex;
 	align-items:flex-end;
 	justify-content:center;
@@ -241,37 +241,32 @@ html,body{
 	transition:transform 0.15s;
 }
 .placed-entity-sprite:hover{transform:scale(1.08);}
+.placed-entity-sprite.entity-character{
+	height:100%!important;
+}
 .placed-entity-sprite.item-helium_cylinder{
-	height:98%!important;
-	max-width:28%!important;
+	height:96%!important;
 }
 .placed-entity-sprite.item-coal_sample{
-	height:42%!important;
-	max-width:18%!important;
+	height:48%!important;
 }
 .placed-entity-sprite.item-gas_mask{
-	height:42%!important;
-	max-width:18%!important;
+	height:48%!important;
 }
 .placed-entity-sprite.item-pore_structure{
-	height:48%!important;
-	max-width:20%!important;
+	height:50%!important;
 }
 .placed-entity-sprite.item-lunch{
 	height:38%!important;
-	max-width:18%!important;
 }
 .placed-entity-sprite.item-water{
 	height:36%!important;
-	max-width:16%!important;
 }
 .placed-entity-sprite.item-stopwatch{
 	height:34%!important;
-	max-width:16%!important;
 }
 .placed-entity-sprite.item-dna_fibers{
 	height:42%!important;
-	max-width:18%!important;
 }
 .placed-entity-sprite.item-sealed_letter,
 .placed-entity-sprite.item-assignment_letter,
@@ -279,48 +274,47 @@ html,body{
 .placed-entity-sprite.item-papers,
 .placed-entity-sprite.item-research_report{
 	height:45%!important;
-	max-width:20%!important;
 }
 .placed-entity-sprite.item-form_a,
 .placed-entity-sprite.item-form_b,
 .placed-entity-sprite.item-photo_51{
 	height:50%!important;
-	max-width:20%!important;
 }
 .placed-entity-sprite.item-amorphous_carbon{
 	height:44%!important;
-	max-width:18%!important;
 }
 .placed-entity-sprite.item-carbon_chart,
 .placed-entity-sprite.item-math_models{
 	height:52%!important;
-	max-width:22%!important;
 }
 .placed-entity-sprite.item-xray_beam{
 	height:75%!important;
-	max-width:25%!important;
 }
 .placed-entity-sprite.item-xray_camera{
 	height:65%!important;
-	max-width:22%!important;
 }
 .placed-entity-sprite.item-dry_chamber,
 .placed-entity-sprite.item-humid_chamber{
 	height:70%!important;
-	max-width:24%!important;
 }
 .placed-entity-sprite.item-wire_model,
 .placed-entity-sprite.item-double_helix_model{
 	height:75%!important;
-	max-width:24%!important;
 }
 .placed-entity-sprite.item-desk{
 	height:75%!important;
-	max-width:28%!important;
 }
 .placed-entity-sprite.item-baggage{
 	height:50%!important;
-	max-width:22%!important;
+}
+.placed-entity-sprite img{
+	height:100%;
+	max-height:100%;
+	width:auto;
+	max-width:100%;
+	object-fit:contain;
+	object-position:bottom center;
+	filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));
 }
 .char-question-mark{
 	position:absolute;
