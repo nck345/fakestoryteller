@@ -11,6 +11,7 @@
 	--panel-bg:#ebe2cb;
 	--card-bg:#ffffff;
 	--shadow-soft:0 4px 16px rgba(0,0,0,0.35);
+	--char-h:clamp(130px, 22vh, 175px);
 }
 *{box-sizing:border-box;margin:0;padding:0;font-style:normal!important;}
 html,body{
@@ -220,104 +221,125 @@ html,body{
 }
 .frame-elements-row{
 	position:absolute;
-	bottom:4px;
+	bottom:6px;
 	left:4px;
 	right:4px;
-	height:62%;
+	height:auto;
+	min-height:calc(var(--char-h) + 40px);
 	display:flex;
 	justify-content:center;
 	align-items:flex-end;
-	gap:8px;
+	gap:10px;
 	z-index:2;
 }
 .placed-entity-sprite{
-	height:100%;
+	height:auto;
+	width:auto;
 	max-width:25%;
-	display:flex;
-	align-items:flex-end;
-	justify-content:center;
+	display:inline-flex;
+	flex-direction:column;
+	align-items:center;
+	justify-content:flex-end;
 	position:relative;
 	cursor:pointer;
 	transition:transform 0.15s;
 }
 .placed-entity-sprite:hover{transform:scale(1.08);}
-.placed-entity-sprite.entity-character{
-	height:100%!important;
-}
-.placed-entity-sprite.item-helium_cylinder{
-	height:96%!important;
-}
-.placed-entity-sprite.item-coal_sample{
-	height:48%!important;
-}
-.placed-entity-sprite.item-gas_mask{
-	height:48%!important;
-}
-.placed-entity-sprite.item-pore_structure{
-	height:50%!important;
-}
-.placed-entity-sprite.item-lunch{
-	height:38%!important;
-}
-.placed-entity-sprite.item-water{
-	height:36%!important;
-}
-.placed-entity-sprite.item-stopwatch{
-	height:34%!important;
-}
-.placed-entity-sprite.item-dna_fibers{
-	height:42%!important;
-}
-.placed-entity-sprite.item-sealed_letter,
-.placed-entity-sprite.item-assignment_letter,
-.placed-entity-sprite.item-notebook,
-.placed-entity-sprite.item-papers,
-.placed-entity-sprite.item-research_report{
-	height:45%!important;
-}
-.placed-entity-sprite.item-form_a,
-.placed-entity-sprite.item-form_b,
-.placed-entity-sprite.item-photo_51{
-	height:50%!important;
-}
-.placed-entity-sprite.item-amorphous_carbon{
-	height:44%!important;
-}
-.placed-entity-sprite.item-carbon_chart,
-.placed-entity-sprite.item-math_models{
-	height:52%!important;
-}
-.placed-entity-sprite.item-xray_beam{
-	height:75%!important;
-}
-.placed-entity-sprite.item-xray_camera{
-	height:65%!important;
-}
-.placed-entity-sprite.item-dry_chamber,
-.placed-entity-sprite.item-humid_chamber{
-	height:70%!important;
-}
-.placed-entity-sprite.item-wire_model,
-.placed-entity-sprite.item-double_helix_model{
-	height:75%!important;
-}
-.placed-entity-sprite.item-desk{
-	height:75%!important;
-}
-.placed-entity-sprite.item-baggage{
-	height:50%!important;
-}
 .placed-entity-sprite img{
-	height:100%;
-	max-height:100%;
+	display:block;
 	width:auto;
 	max-width:100%;
 	object-fit:contain;
-	object-position:bottom center;
 	filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+.placed-entity-sprite.entity-character img{
+	height:var(--char-h)!important;
+}
+.placed-entity-sprite.item-helium_cylinder img{
+	height:var(--char-h)!important;
+}
+.placed-entity-sprite.item-coal_sample img{
+	height:calc(var(--char-h) * 0.5)!important;
+}
+.placed-entity-sprite.item-gas_mask img{
+	height:calc(var(--char-h) * 0.5)!important;
+}
+.placed-entity-sprite.item-pore_structure img{
+	height:calc(var(--char-h) * 0.52)!important;
+}
+.placed-entity-sprite.item-lunch img{
+	height:calc(var(--char-h) * 0.42)!important;
+}
+.placed-entity-sprite.item-water img{
+	height:calc(var(--char-h) * 0.40)!important;
+}
+.placed-entity-sprite.item-stopwatch img{
+	height:calc(var(--char-h) * 0.38)!important;
+}
+.placed-entity-sprite.item-dna_fibers img{
+	height:calc(var(--char-h) * 0.46)!important;
+}
+.placed-entity-sprite.item-sealed_letter img,
+.placed-entity-sprite.item-assignment_letter img,
+.placed-entity-sprite.item-notebook img,
+.placed-entity-sprite.item-papers img,
+.placed-entity-sprite.item-research_report img{
+	height:calc(var(--char-h) * 0.46)!important;
+}
+.placed-entity-sprite.item-form_a img,
+.placed-entity-sprite.item-form_b img,
+.placed-entity-sprite.item-photo_51 img{
+	height:calc(var(--char-h) * 0.52)!important;
+}
+.placed-entity-sprite.item-amorphous_carbon img{
+	height:calc(var(--char-h) * 0.46)!important;
+}
+.placed-entity-sprite.item-carbon_chart img,
+.placed-entity-sprite.item-math_models img{
+	height:calc(var(--char-h) * 0.55)!important;
+}
+.placed-entity-sprite.item-xray_beam img{
+	height:calc(var(--char-h) * 0.85)!important;
+}
+.placed-entity-sprite.item-xray_camera img{
+	height:calc(var(--char-h) * 0.70)!important;
+}
+.placed-entity-sprite.item-dry_chamber img,
+.placed-entity-sprite.item-humid_chamber img{
+	height:calc(var(--char-h) * 0.75)!important;
+}
+.placed-entity-sprite.item-wire_model img,
+.placed-entity-sprite.item-double_helix_model img{
+	height:calc(var(--char-h) * 0.80)!important;
+}
+.placed-entity-sprite.item-desk img{
+	height:calc(var(--char-h) * 0.80)!important;
+}
+.placed-entity-sprite.item-baggage img{
+	height:calc(var(--char-h) * 0.55)!important;
 }
 .char-question-mark{
 	position:absolute;
+	top:-28px;
+	left:50%;
+	transform:translateX(-50%);
+	background:var(--crimson);
+	color:#ffffff;
+	border:1.5px solid #ffffff;
+	width:22px;
+	height:22px;
+	border-radius:50%;
+	font-size:0.85rem;
+	font-weight:900;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	font-family:'Pixelify Sans',monospace;
+	box-shadow:0 3px 6px rgba(0,0,0,0.5);
+	animation:questionFloat 1.1s ease-in-out infinite alternate;
+	pointer-events:none;
+	z-index:10;
+}
 	top:-26px;
 	left:50%;
 	transform:translateX(-50%);
