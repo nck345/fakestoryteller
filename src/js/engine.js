@@ -6,6 +6,7 @@ class StoryEngine{
 		this.isActSolved=false;
 		this.unlockedActs=new Set(['act3_1']);
 		this.unlockedMinigames=new Set();
+		this.actSessions={};
 		this.listeners={};
 		this.loadProgress();
 		this.initAct();
@@ -26,7 +27,11 @@ class StoryEngine{
 	}
 	initAct(){
 		const act=this.getCurrentAct();
-		this.framesState=Array.from({length:act.framesCount},()=>({setting:null,elements:[],characters:[],items:[],result:null,isCorrect:false,gasLabSolved:false,gasLabFired:false}));
+		if(this.actSessions[act.id]){
+			this.framesState=JSON.parse(JSON.stringify(this.actSessions[act.id]));
+		}else{
+			this.framesState=Array.from({length:act.framesCount},()=>({setting:null,elements:[],characters:[],items:[],result:null,isCorrect:false,gasLabSolved:false,gasLabFired:false}));
+		}
 		this.isActSolved=false;
 		this.emit('actLoaded',act);
 		this.evaluateAll();
@@ -71,6 +76,7 @@ class StoryEngine{
 	}
 	resetAct(){
 		const act=this.getCurrentAct();
+		delete this.actSessions[act.id];
 		this.framesState=Array.from({length:act.framesCount},()=>({setting:null,elements:[],characters:[],items:[],result:null,isCorrect:false,gasLabSolved:false,gasLabFired:false}));
 		this.isActSolved=false;
 		this.evaluateAll();
@@ -113,20 +119,37 @@ class StoryEngine{
 		if(targetRule){
 			const isExactMatch=targetRule.check(s,chars,items,frame);
 			if(isExactMatch){
+				if(frameIdx>0&&!this.framesState[frameIdx-1].isCorrect){
+					const curName=targetRule.shortOutcome||targetRule.title.trim().replace(/\.$/,'');
+					const prevName=act.frames[frameIdx-1]?.shortOutcome||act.frames[frameIdx-1]?.title.trim().replace(/\.$/,'')||'the previous step';
+					frame.result={type:'causality_blocked',text:`${curName} cannot happen before ${prevName} happens.`,anim:null,sound:null,showQuestion:false};
+					frame.isCorrect=false;
+					return;
+				}
 				frame.result={type:'success',text:targetRule.title,anim:targetRule.anim||null,sound:targetRule.sound||null,showQuestion:false};
 				frame.isCorrect=true;
 				if(act.id==='act3_1'&&frameIdx===1) this.unlockedMinigames.add('gas_lab');
 				if((act.id==='act3_3'&&frameIdx===1)||(act.id==='act4_2'&&frameIdx===2)) this.unlockedMinigames.add('xray_dial');
 				if(act.id==='act4_4'&&frameIdx===2) this.unlockedMinigames.add('darkroom');
+				this.saveProgress();
 				return;
 			}
 			if(targetRule.triggerGasLab&&!frame.gasLabSolved){
 				const isComponentsReady=(s==='bcura_lab'&&chars.length===1&&chars[0]==='rosalind'&&items.length===2&&items.includes('coal_sample')&&items.includes('helium_cylinder'));
-				if(isComponentsReady&&!frame.gasLabFired){
-					frame.gasLabFired=true;
-					frame.result={type:'gas_lab_prompt',text:'Rosalind discovers tiny pores inside coal. "Let\'s perform the helium gas experiment!"',showQuestion:false};
-					this.emit('gasLabTriggered',{frameIndex:frameIdx});
-					return;
+				if(isComponentsReady){
+					if(frameIdx>0&&!this.framesState[frameIdx-1].isCorrect){
+						const curName=targetRule.shortOutcome||targetRule.title.trim().replace(/\.$/,'');
+						const prevName=act.frames[frameIdx-1]?.shortOutcome||act.frames[frameIdx-1]?.title.trim().replace(/\.$/,'')||'the previous step';
+						frame.result={type:'causality_blocked',text:`${curName} cannot happen before ${prevName} happens.`,anim:null,sound:null,showQuestion:false};
+						frame.isCorrect=false;
+						return;
+					}
+					if(!frame.gasLabFired){
+						frame.gasLabFired=true;
+						frame.result={type:'gas_lab_prompt',text:'Rosalind discovers tiny pores inside coal. "Let\'s perform the helium gas experiment!"',showQuestion:false};
+						this.emit('gasLabTriggered',{frameIndex:frameIdx});
+						return;
+					}
 				}
 			}
 		}
@@ -169,13 +192,21 @@ class StoryEngine{
 			if(nextCh.acts.length>0) this.unlockedActs.add(nextCh.acts[0].id);
 		}
 	}
-	goToAct(chIdx,actIdx){
+	goToAct(chIdx,actIdx,showIntro=true){
 		if(chIdx>=0&&chIdx<CHAPTERS_DATA.length){
 			const ch=CHAPTERS_DATA[chIdx];
 			if(actIdx>=0&&actIdx<ch.acts.length){
+				const prevAct=this.getCurrentAct();
+				if(prevAct&&this.framesState&&this.framesState.length>0){
+					this.actSessions[prevAct.id]=JSON.parse(JSON.stringify(this.framesState));
+				}
 				this.currentChapterIndex=chIdx;
 				this.currentActIndex=actIdx;
 				this.initAct();
+				const curAct=this.getCurrentAct();
+				if(showIntro&&window.cutsceneCtrl&&document.getElementById('bookCoverScreen')?.classList.contains('hidden')){
+					window.cutsceneCtrl.playActIntro(curAct);
+				}
 			}
 		}
 	}
@@ -198,7 +229,7 @@ class StoryEngine{
 	}
 	saveProgress(){
 		try{
-			const data={unlocked:Array.from(this.unlockedActs),minigames:Array.from(this.unlockedMinigames),ch:this.currentChapterIndex,act:this.currentActIndex};
+			const data={unlocked:Array.from(this.unlockedActs),minigames:Array.from(this.unlockedMinigames)};
 			localStorage.setItem('fakestoryteller_progress',JSON.stringify(data));
 		}catch(e){}
 	}
@@ -212,8 +243,6 @@ class StoryEngine{
 					this.unlockedActs=new Set(valid.length>0?valid:['act3_1']);
 				}
 				if(data.minigames) this.unlockedMinigames=new Set(data.minigames);
-				if(typeof data.ch==='number'&&data.ch>=0&&data.ch<CHAPTERS_DATA.length) this.currentChapterIndex=data.ch;
-				if(typeof data.act==='number'&&data.act>=0&&data.act<(CHAPTERS_DATA[this.currentChapterIndex]?.acts.length||1)) this.currentActIndex=data.act;
 			}
 		}catch(e){}
 	}

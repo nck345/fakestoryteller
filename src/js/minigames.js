@@ -2,6 +2,7 @@ class MinigameController{
 	constructor(){
 		this.activeGame=null;
 		this.container=null;
+		this.isManual=false;
 	}
 	init(containerEl){
 		this.container=containerEl;
@@ -13,17 +14,18 @@ class MinigameController{
 		}
 		this.activeGame=null;
 	}
-	openGasMaze(){
+	openGasMaze(opts={}){
 		if(!this.container) return;
 		this.activeGame='gas_maze';
+		this.isManual=Boolean(opts&&opts.isManual);
 		this.container.classList.remove('hidden');
 		this.container.innerHTML=`
 			<div class="modal-card">
 				<div class="modal-header">
 					<h3>BCURA Lab: Helium Gas Micropore Flow</h3>
-					<button class="close-btn" id="mgClose">&times;</button>
+					<button class="close-btn" id="mgClose" style="${this.isManual?'':'display:none;'}">&times;</button>
 				</div>
-				<p class="modal-desc">Adjust the pressure valve to guide helium gas particles through the microscopic coal tunnels without clogging.</p>
+				<p class="modal-desc">Adjust the pressure valve between 45% - 65% to guide helium gas particles through the microscopic coal tunnels without clogging.</p>
 				<div class="canvas-wrap">
 					<canvas id="gasCanvas" width="560" height="260"></canvas>
 				</div>
@@ -35,7 +37,8 @@ class MinigameController{
 				<div class="mg-status" id="mgStatus">Status: Awaiting gas release.</div>
 			</div>
 		`;
-		document.getElementById('mgClose').onclick=()=>this.close();
+		const closeBtn=document.getElementById('mgClose');
+		if(closeBtn) closeBtn.onclick=()=>this.close();
 		this.setupGasCanvas();
 	}
 	setupGasCanvas(){
@@ -77,7 +80,7 @@ class MinigameController{
 			running=true;
 			particles=[];
 			for(let i=0;i<45;++i){
-				particles.push({x:15+Math.random()*20,y:80+Math.random()*100,vx:(pressure/25)+Math.random()*1.5,vy:(Math.random()-0.5)*2,stuck:false});
+				particles.push({x:15+Math.random()*20,y:80+Math.random()*100,vx:(pressure/14)+Math.random()*2,vy:(Math.random()-0.5)*2.5,stuck:false});
 			}
 			if(window.audioMgr) window.audioMgr.playSFX('bubbling');
 			status.textContent='Gas expanding through coal micropores...';
@@ -115,15 +118,18 @@ class MinigameController{
 				}else{
 					running=false;
 					if(reached>=25){
-						status.innerHTML='<span style="color:#10b981;font-weight:bold;">Success! Active micropores verified: 100% molecular sieve absorption!</span>';
+						status.innerHTML='<span style="color:#10b981;font-weight:bold;">Success! Active micropores verified: 100% molecular sieve absorption!</span><br><button class="primary-btn" id="mgContinueBtn" style="margin-top:10px;">Continue Story →</button>';
 						if(window.audioMgr) window.audioMgr.playSFX('goal_success');
 						window.storyEngine.unlockedMinigames.add('gas_lab');
+						window.storyEngine.saveProgress();
 						if(window.storyEngine.framesState[1]){
 							window.storyEngine.framesState[1].gasLabSolved=true;
 							window.storyEngine.evaluateAll();
 						}
-						if(window.uiCtrl) window.uiCtrl.updateHeaderMinigames(window.storyEngine.getCurrentAct());
-						setTimeout(()=>this.close(),1600);
+						if(window.uiCtrl) window.uiCtrl.updateMinigamesHub();
+						const contBtn=document.getElementById('mgContinueBtn');
+						if(contBtn) contBtn.onclick=()=>this.close();
+						setTimeout(()=>{if(this.activeGame==='gas_maze') this.close();},2200);
 					}else{
 						status.innerHTML='<span style="color:#ef4444;font-weight:bold;">Flow clogged! Hint: Adjust valve pressure between 45% - 65% for steady molecular flow.</span>';
 						if(window.audioMgr) window.audioMgr.playSFX('fail_thud');
@@ -138,15 +144,16 @@ class MinigameController{
 			requestAnimationFrame(loop);
 		};
 	}
-	openXrayFocus(){
+	openXrayFocus(opts={}){
 		if(!this.container) return;
 		this.activeGame='xray_focus';
+		this.isManual=Boolean(opts&&opts.isManual);
 		this.container.classList.remove('hidden');
 		this.container.innerHTML=`
 			<div class="modal-card">
 				<div class="modal-header">
 					<h3>Laboratoire Central: Collimator Rotary Calibration</h3>
-					<button class="close-btn" id="mgClose">&times;</button>
+					<button class="close-btn" id="mgClose" style="${this.isManual?'':'display:none;'}">&times;</button>
 				</div>
 				<p class="modal-desc">Rotate the precision vernier collimator to align the X-ray beam and resolve sharp diffraction coordinates.</p>
 				<div class="focus-wrap">
@@ -166,7 +173,8 @@ class MinigameController{
 				<div class="mg-status" id="mgFocusStatus">Status: Blurry concentric halos. Rotate dial towards 180°.</div>
 			</div>
 		`;
-		document.getElementById('mgClose').onclick=()=>this.close();
+		const closeBtn=document.getElementById('mgClose');
+		if(closeBtn) closeBtn.onclick=()=>this.close();
 		this.setupDial();
 	}
 	setupDial(){
@@ -192,9 +200,13 @@ class MinigameController{
 				if(window.audioMgr) window.audioMgr.playSFX('focus_lock');
 				diffView.style.filter='blur(0px)';
 				diffCross.style.opacity='1';
-				status.innerHTML='<span style="color:#10b981;font-weight:bold;">Focus Locked (180°)! High-order diffraction spots clearly resolved!</span>';
+				status.innerHTML='<span style="color:#10b981;font-weight:bold;">Focus Locked (180°)! High-order diffraction spots clearly resolved!</span><br><button class="primary-btn" id="mgContinueBtn" style="margin-top:10px;">Continue Story →</button>';
 				window.storyEngine.unlockedMinigames.add('xray_dial');
-				if(window.uiCtrl) window.uiCtrl.updateHeaderMinigames(window.storyEngine.getCurrentAct());
+				window.storyEngine.saveProgress();
+				if(window.uiCtrl) window.uiCtrl.updateMinigamesHub();
+				const contBtn=document.getElementById('mgContinueBtn');
+				if(contBtn) contBtn.onclick=()=>this.close();
+				setTimeout(()=>{if(this.activeGame==='xray_focus') this.close();},2200);
 			}else if(dist>8&&locked){
 				locked=false;
 				status.textContent='Blurry concentric halos. Rotate dial towards 180°.';
@@ -219,15 +231,16 @@ class MinigameController{
 		window.ontouchmove=onMove;
 		window.ontouchend=()=>{dragging=false;};
 	}
-	openDarkroom(){
+	openDarkroom(opts={}){
 		if(!this.container) return;
 		this.activeGame='darkroom';
+		this.isManual=Boolean(opts&&opts.isManual);
 		this.container.classList.remove('hidden');
 		this.container.innerHTML=`
 			<div class="modal-card">
 				<div class="modal-header">
 					<h3>Darkroom: Photo 51 Development</h3>
-					<button class="close-btn" id="mgClose">&times;</button>
+					<button class="close-btn" id="mgClose" style="${this.isManual?'':'display:none;'}">&times;</button>
 				</div>
 				<p class="modal-desc">Agitate the chemical developer tray for 6-8 seconds to properly emerge the crystalline helical pattern.</p>
 				<div class="darkroom-wrap">
@@ -246,7 +259,8 @@ class MinigameController{
 				<div class="mg-status" id="mgDarkStatus">Status: Film submerged in chemical developer. Keep agitating.</div>
 			</div>
 		`;
-		document.getElementById('mgClose').onclick=()=>this.close();
+		const closeBtn=document.getElementById('mgClose');
+		if(closeBtn) closeBtn.onclick=()=>this.close();
 		this.setupDarkroom();
 	}
 	setupDarkroom(){
@@ -279,24 +293,27 @@ class MinigameController{
 		};
 		liftBtn.onclick=()=>{
 			if(interval) clearInterval(interval);
+			interval=null;
 			if(window.audioMgr) window.audioMgr.playSFX('camera_shutter');
 			if(bathSeconds>=5.5&&bathSeconds<=9.5){
-				status.innerHTML='<span style="color:#10b981;font-weight:bold;">Photograph 51 developed with pristine clarity! The helical cross is indisputable.</span>';
+				status.innerHTML='<span style="color:#10b981;font-weight:bold;">Photograph 51 developed with pristine clarity! The helical cross is indisputable.</span><br><button class="primary-btn" id="mgContinueBtn" style="margin-top:10px;">Continue Story →</button>';
 				if(window.audioMgr) window.audioMgr.playSFX('goal_success');
 				window.storyEngine.unlockedMinigames.add('darkroom');
-				if(window.uiCtrl) window.uiCtrl.updateHeaderMinigames(window.storyEngine.getCurrentAct());
+				window.storyEngine.saveProgress();
+				if(window.uiCtrl) window.uiCtrl.updateMinigamesHub();
+				const contBtn=document.getElementById('mgContinueBtn');
+				if(contBtn) contBtn.onclick=()=>this.close();
+				setTimeout(()=>{if(this.activeGame==='darkroom') this.close();},2200);
 			}else{
-				status.innerHTML='<span style="color:#ef4444;font-weight:bold;">Plate spoiled by improper timing. Hint: Agitate chemical bath for 6-8 seconds, then lift immediately.</span>';
+				status.innerHTML='<span style="color:#ef4444;font-weight:bold;">Plate spoiled by improper timing. Click Agitate to restart chemical bath for 6-8 seconds.</span>';
 				if(window.audioMgr) window.audioMgr.playSFX('fail_thud');
-				if(window.storyEngine.getCurrentAct().id==='act4_4'&&window.storyEngine.framesState[2]){
-					window.storyEngine.framesState[2].result={type:'fail',text:'Plate spoiled! Hint: Agitate chemical bath for 6-8 seconds, then lift immediately.',sound:'fail_thud',showQuestion:true};
-					window.storyEngine.emit('stateUpdated',{frames:window.storyEngine.framesState,isSolved:false});
-				}
+				bathSeconds=0;
+				img.style.opacity=0;
+				timerBadge.textContent='Bath Time: 0.0s';
+				agitateBtn.disabled=false;
+				liftBtn.disabled=true;
 			}
-			liftBtn.disabled=true;
-			agitateBtn.disabled=true;
 		};
 	}
 }
 window.minigameCtrl=new MinigameController();
-

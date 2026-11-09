@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 	const initialAct=window.storyEngine.getCurrentAct();
 	window.uiCtrl.renderAct(initialAct);
 	window.storyEngine.evaluateAll();
+	window.uiCtrl.updateMinigamesHub();
 	const coverBtn=document.getElementById('coverOpenBtn');
 	if(coverBtn){
 		coverBtn.onclick=()=>{
@@ -15,6 +16,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 			}
 			const coverScreen=document.getElementById('bookCoverScreen');
 			if(coverScreen) coverScreen.classList.add('hidden');
+			window.storyEngine.goToAct(0,0,false);
 			window.cutsceneCtrl.playTutorial();
 		};
 	}
@@ -41,23 +43,21 @@ document.addEventListener('DOMContentLoaded',()=>{
 			}
 		};
 	}
-	const introCutsceneBtn=document.getElementById('actIntroBtn');
-	if(introCutsceneBtn){
-		introCutsceneBtn.onclick=()=>{
-			const act=window.storyEngine.getCurrentAct();
-			window.cutsceneCtrl.playActIntro(act);
+	const hubBtn=document.getElementById('minigamesHubBtn');
+	const hubDrop=document.getElementById('minigamesDropdown');
+	if(hubBtn&&hubDrop){
+		hubBtn.onclick=e=>{
+			e.stopPropagation();
+			hubDrop.classList.toggle('hidden');
 		};
+		document.addEventListener('click',e=>{
+			if(!e.target.closest('#minigamesHubWrap')) hubDrop.classList.add('hidden');
+		});
 	}
 	const guideBtn=document.getElementById('guideBtn');
 	if(guideBtn) guideBtn.onclick=()=>window.cutsceneCtrl.playTutorial();
 	const codexBtn=document.getElementById('codexBtn');
 	if(codexBtn) codexBtn.onclick=()=>window.codexCtrl.open();
-	const mgGasBtn=document.getElementById('mgGasBtn');
-	if(mgGasBtn) mgGasBtn.onclick=()=>window.minigameCtrl.openGasMaze();
-	const mgFocusBtn=document.getElementById('mgFocusBtn');
-	if(mgFocusBtn) mgFocusBtn.onclick=()=>window.minigameCtrl.openXrayFocus();
-	const mgDarkBtn=document.getElementById('mgDarkBtn');
-	if(mgDarkBtn) mgDarkBtn.onclick=()=>window.minigameCtrl.openDarkroom();
 	const tocBtn=document.getElementById('tocBtn');
 	const tocModal=document.getElementById('tocModal');
 	const tocClose=document.getElementById('tocClose');

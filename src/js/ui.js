@@ -18,22 +18,59 @@ class UIController{
 		const stampEl=document.getElementById('solvedStamp');
 		const chNameEl=document.getElementById('chapterName');
 		if(titleEl) titleEl.textContent=`Act ${act.actNumber}: ${act.title}`;
-		if(goalEl) goalEl.textContent=act.introText||act.goal;
+		if(goalEl) goalEl.textContent=act.subtitle||act.introText||act.goal;
 		if(chNameEl) chNameEl.textContent=window.storyEngine.getCurrentChapter().title;
 		if(stampEl) stampEl.classList.remove('visible');
 		this.renderFrames(act.framesCount);
 		this.renderTray(act.availableCards);
 		this.updateNavigation();
-		this.updateHeaderMinigames(act);
+		this.updateMinigamesHub();
 		if(window.audioMgr) window.audioMgr.playBGM(act.bgm||'paris');
 	}
-	updateHeaderMinigames(act){
-		const mgGas=document.getElementById('mgGasBtn');
-		const mgFocus=document.getElementById('mgFocusBtn');
-		const mgDark=document.getElementById('mgDarkBtn');
-		if(mgGas) mgGas.style.display=window.storyEngine.unlockedMinigames.has('gas_lab')?'inline-flex':'none';
-		if(mgFocus) mgFocus.style.display=window.storyEngine.unlockedMinigames.has('xray_dial')?'inline-flex':'none';
-		if(mgDark) mgDark.style.display=window.storyEngine.unlockedMinigames.has('darkroom')?'inline-flex':'none';
+	updateMinigamesHub(){
+		const wrap=document.getElementById('minigamesHubWrap');
+		const countEl=document.getElementById('mgUnlockedCount');
+		const dropdown=document.getElementById('minigamesDropdown');
+		if(!wrap||!countEl||!dropdown) return;
+		const unlocked=window.storyEngine.unlockedMinigames;
+		if(!unlocked||unlocked.size===0){
+			wrap.style.display='none';
+			dropdown.classList.add('hidden');
+			return;
+		}
+		wrap.style.display='inline-block';
+		countEl.textContent=unlocked.size;
+		dropdown.innerHTML='';
+		if(unlocked.has('gas_lab')){
+			const b=document.createElement('button');
+			b.className='mg-drop-item';
+			b.textContent='⚗️ BCURA Gas Micropore Flow';
+			b.onclick=()=>{
+				dropdown.classList.add('hidden');
+				if(window.minigameCtrl) window.minigameCtrl.openGasMaze({isManual:true});
+			};
+			dropdown.appendChild(b);
+		}
+		if(unlocked.has('xray_dial')){
+			const b=document.createElement('button');
+			b.className='mg-drop-item';
+			b.textContent='🎯 X-Ray Collimator Dial';
+			b.onclick=()=>{
+				dropdown.classList.add('hidden');
+				if(window.minigameCtrl) window.minigameCtrl.openXrayFocus({isManual:true});
+			};
+			dropdown.appendChild(b);
+		}
+		if(unlocked.has('darkroom')){
+			const b=document.createElement('button');
+			b.className='mg-drop-item';
+			b.textContent='📷 Photo 51 Darkroom';
+			b.onclick=()=>{
+				dropdown.classList.add('hidden');
+				if(window.minigameCtrl) window.minigameCtrl.openDarkroom({isManual:true});
+			};
+			dropdown.appendChild(b);
+		}
 	}
 	renderFrames(count){
 		const container=document.getElementById('panelsRow');
@@ -169,7 +206,17 @@ class UIController{
 			if(hasActionAnim){
 				elementsRow.style.display='none';
 				overlayEl.innerHTML=`<img src="${f.result.anim}" class="anim-reaction" alt="Action Animation">`;
+				overlayEl.title='Click animation to remove item';
+				overlayEl.onclick=e=>{
+					e.stopPropagation();
+					if(f.elements.length>0){
+						const lastId=f.elements[f.elements.length-1];
+						window.storyEngine.removeElement(idx,lastId);
+						if(window.audioMgr) window.audioMgr.playSFX('button_click');
+					}
+				};
 			}else{
+				overlayEl.onclick=null;
 				elementsRow.style.display='flex';
 				f.elements.forEach(elId=>{
 					const card=STORY_CARDS[elId];
@@ -213,7 +260,7 @@ class UIController{
 				nextBtn.classList.remove('ready');
 			}
 		}
-		this.updateHeaderMinigames(window.storyEngine.getCurrentAct());
+		this.updateMinigamesHub();
 	}
 	onGasLabTriggered(data){
 		const speech=document.getElementById(`speech_${data.frameIndex}`);

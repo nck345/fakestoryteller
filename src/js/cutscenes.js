@@ -36,7 +36,7 @@ class CutsceneController{
 	playActIntro(act,onComplete){
 		if(!this.container) return;
 		this.container.classList.remove('hidden');
-		const intro=act.introText||`Welcome to Act ${act.actNumber}: ${act.title}. Goal: ${act.goal}`;
+		const intro=act.fullIntroText||act.introText||`Welcome to Act ${act.actNumber}: ${act.title}. Goal: ${act.goal}`;
 		this.renderCutscene({
 			title:`Act ${act.actNumber}: ${act.title}`,
 			subtitle:act.goal,
