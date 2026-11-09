@@ -98,15 +98,19 @@ class CutsceneController{
 				clearInterval(this.typingInterval);
 			}
 		},16);
-		const btn=document.getElementById('skipCutsceneBtn');
-		btn.onclick=()=>{
-			if(charIdx<fullText.length){
+		const contentBox=this.container.querySelector('.cutscene-content');
+		if(contentBox){
+			contentBox.onclick=()=>{
 				charIdx=fullText.length;
 				targetEl.textContent=fullText;
 				clearInterval(this.typingInterval);
-			}else{
-				if(opts.onComplete) opts.onComplete();
-			}
+			};
+		}
+		const btn=document.getElementById('skipCutsceneBtn');
+		btn.onclick=()=>{
+			if(window.audioMgr) window.audioMgr.playSFX('button_click');
+			clearInterval(this.typingInterval);
+			if(opts.onComplete) opts.onComplete();
 		};
 	}
 }

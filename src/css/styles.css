@@ -402,7 +402,7 @@ html,body{
 	inset:0;
 	background:rgba(10,5,3,0.85);
 	backdrop-filter:blur(3px);
-	z-index:100;
+	z-index:1000;
 	display:flex;
 	align-items:center;
 	justify-content:center;
