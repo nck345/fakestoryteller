@@ -26,16 +26,18 @@ html,body{
 	width:100%;
 	max-width:1440px;
 	height:100vh;
+	max-height:100vh;
 	margin:0 auto;
-	padding:6px 12px;
+	padding:4px 10px;
 	display:flex;
 	flex-direction:column;
 	justify-content:space-between;
-	gap:6px;
+	gap:4px;
+	overflow:hidden;
 }
 .game-header{
-	height:42px;
-	min-height:42px;
+	height:40px;
+	min-height:40px;
 	background:linear-gradient(180deg,#2d1f15 0%,#1e140d 100%);
 	border:1px solid #4a3321;
 	border-radius:6px;
@@ -54,17 +56,11 @@ html,body{
 .game-title-wrap{text-align:center;}
 .chapter-badge{
 	font-family:'Pixelify Sans',monospace;
-	font-size:0.7rem;
-	letter-spacing:1px;
+	font-size:0.88rem;
+	font-weight:700;
+	letter-spacing:1.5px;
 	text-transform:uppercase;
 	color:var(--gold);
-}
-.game-main-title{
-	font-size:1.05rem;
-	letter-spacing:1px;
-	font-weight:700;
-	color:#fff5e1;
-	line-height:1.1;
 }
 .hud-btn{
 	background:#3b2a1c;
@@ -240,10 +236,43 @@ html,body{
 	display:flex;
 	align-items:flex-end;
 	justify-content:center;
+	position:relative;
 	cursor:pointer;
 	transition:transform 0.15s;
 }
 .placed-entity-sprite:hover{transform:scale(1.08);}
+.placed-entity-sprite.item-helium_cylinder{
+	height:80%!important;
+}
+.placed-entity-sprite.item-coal_sample{
+	height:40%!important;
+}
+.char-question-mark{
+	position:absolute;
+	top:-26px;
+	left:50%;
+	transform:translateX(-50%);
+	background:var(--crimson);
+	color:#ffffff;
+	border:1.5px solid #ffffff;
+	width:22px;
+	height:22px;
+	border-radius:50%;
+	font-size:0.85rem;
+	font-weight:900;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	font-family:'Pixelify Sans',monospace;
+	box-shadow:0 3px 6px rgba(0,0,0,0.5);
+	animation:questionFloat 1.1s ease-in-out infinite alternate;
+	pointer-events:none;
+	z-index:10;
+}
+@keyframes questionFloat{
+	0%{transform:translateX(-50%) translateY(0);}
+	100%{transform:translateX(-50%) translateY(-6px);}
+}
 .placed-entity-sprite img{
 	height:100%;
 	max-height:100%;

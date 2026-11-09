@@ -1,10 +1,11 @@
 class StoryEngine{
 	constructor(){
-		this.currentChapterIndex=1;
+		this.currentChapterIndex=0;
 		this.currentActIndex=0;
 		this.framesState=[];
 		this.isActSolved=false;
-		this.unlockedActs=new Set(['act1_1','act3_1']);
+		this.unlockedActs=new Set(['act3_1']);
+		this.unlockedMinigames=new Set();
 		this.listeners={};
 		this.loadProgress();
 		this.initAct();
@@ -25,7 +26,7 @@ class StoryEngine{
 	}
 	initAct(){
 		const act=this.getCurrentAct();
-		this.framesState=Array.from({length:act.framesCount},()=>({setting:null,elements:[],characters:[],items:[],result:null,isCorrect:false}));
+		this.framesState=Array.from({length:act.framesCount},()=>({setting:null,elements:[],characters:[],items:[],result:null,isCorrect:false,gasLabSolved:false,gasLabFired:false}));
 		this.isActSolved=false;
 		this.emit('actLoaded',act);
 		this.evaluateAll();
@@ -65,12 +66,12 @@ class StoryEngine{
 	}
 	clearFrame(frameIdx){
 		if(!this.framesState[frameIdx]) return;
-		this.framesState[frameIdx]={setting:null,elements:[],characters:[],items:[],result:null,isCorrect:false};
+		this.framesState[frameIdx]={setting:null,elements:[],characters:[],items:[],result:null,isCorrect:false,gasLabSolved:false,gasLabFired:false};
 		this.evaluateAll();
 	}
 	resetAct(){
 		const act=this.getCurrentAct();
-		this.framesState=Array.from({length:act.framesCount},()=>({setting:null,elements:[],characters:[],items:[],result:null,isCorrect:false}));
+		this.framesState=Array.from({length:act.framesCount},()=>({setting:null,elements:[],characters:[],items:[],result:null,isCorrect:false,gasLabSolved:false,gasLabFired:false}));
 		this.isActSolved=false;
 		this.evaluateAll();
 		this.emit('actReset',act);
@@ -84,6 +85,7 @@ class StoryEngine{
 		const frame=this.framesState[idx];
 		frame.setting=rule.solution.setting;
 		frame.elements=[...(rule.solution.characters||[]),...(rule.solution.items||[])];
+		frame.gasLabSolved=true;
 		this.syncElements(frame);
 		this.evaluateAll();
 		this.emit('frameAutoSolved',{frameIndex:idx});
@@ -102,25 +104,36 @@ class StoryEngine{
 			for(let i=0;i<act.fails.length;++i){
 				const f=act.fails[i];
 				if(f.check(s,chars,items)){
-					frame.result={type:'fail',text:f.text,anim:f.anim||null,sound:f.sound||'fail_thud'};
+					frame.result={type:'fail',text:f.text,anim:f.anim||null,sound:f.sound||'fail_thud',showQuestion:true};
 					return;
 				}
 			}
 		}
 		const targetRule=act.frames[frameIdx];
-		if(targetRule&&targetRule.check(s,chars,items)){
-			frame.result={type:'success',text:targetRule.title,anim:targetRule.anim||null,sound:targetRule.sound||null};
-			frame.isCorrect=true;
-			if(targetRule.triggerGasLab&&!frame.gasLabFired){
-				frame.gasLabFired=true;
-				this.emit('gasLabTriggered',{frameIndex:frameIdx});
+		if(targetRule){
+			const isExactMatch=targetRule.check(s,chars,items,frame);
+			if(isExactMatch){
+				frame.result={type:'success',text:targetRule.title,anim:targetRule.anim||null,sound:targetRule.sound||null,showQuestion:false};
+				frame.isCorrect=true;
+				if(act.id==='act3_1'&&frameIdx===1) this.unlockedMinigames.add('gas_lab');
+				if((act.id==='act3_3'&&frameIdx===1)||(act.id==='act4_2'&&frameIdx===2)) this.unlockedMinigames.add('xray_dial');
+				if(act.id==='act4_4'&&frameIdx===2) this.unlockedMinigames.add('darkroom');
+				return;
 			}
-			return;
+			if(targetRule.triggerGasLab&&!frame.gasLabSolved){
+				const isComponentsReady=(s==='bcura_lab'&&chars.length===1&&chars[0]==='rosalind'&&items.length===2&&items.includes('coal_sample')&&items.includes('helium_cylinder'));
+				if(isComponentsReady&&!frame.gasLabFired){
+					frame.gasLabFired=true;
+					frame.result={type:'gas_lab_prompt',text:'Rosalind discovers tiny pores inside coal. "Let\'s perform the helium gas experiment!"',showQuestion:false};
+					this.emit('gasLabTriggered',{frameIndex:frameIdx});
+					return;
+				}
+			}
 		}
 		for(let i=0;i<act.frames.length;++i){
 			const r=act.frames[i];
-			if(r.check(s,chars,items)){
-				frame.result={type:'match_other',text:r.title,anim:r.anim||null,sound:r.sound||null};
+			if(r.check(s,chars,items,frame)){
+				frame.result={type:'match_other',text:r.title,anim:r.anim||null,sound:r.sound||null,showQuestion:false};
 				return;
 			}
 		}
@@ -128,7 +141,7 @@ class StoryEngine{
 		if(chars.length>0) parts.push(chars.map(c=>STORY_CARDS[c]?.name||c).join(' and '));
 		if(items.length>0) parts.push(items.map(it=>STORY_CARDS[it]?.name||it).join(', '));
 		if(s) parts.push(`at ${STORY_CARDS[s]?.name||s}`);
-		frame.result={type:'neutral',text:parts.length>0?parts.join(' ')+'.':'...'};
+		frame.result={type:'neutral',text:parts.length>0?parts.join(' ')+'.':'...',showQuestion:chars.length>0};
 	}
 	evaluateAll(){
 		const act=this.getCurrentAct();
@@ -167,6 +180,7 @@ class StoryEngine{
 		}
 	}
 	nextAct(){
+		if(!this.isActSolved) return;
 		const ch=this.getCurrentChapter();
 		if(this.currentActIndex+1<ch.acts.length){
 			this.goToAct(this.currentChapterIndex,this.currentActIndex+1);
@@ -184,7 +198,7 @@ class StoryEngine{
 	}
 	saveProgress(){
 		try{
-			const data={unlocked:Array.from(this.unlockedActs),ch:this.currentChapterIndex,act:this.currentActIndex};
+			const data={unlocked:Array.from(this.unlockedActs),minigames:Array.from(this.unlockedMinigames),ch:this.currentChapterIndex,act:this.currentActIndex};
 			localStorage.setItem('fakestoryteller_progress',JSON.stringify(data));
 		}catch(e){}
 	}
@@ -193,9 +207,13 @@ class StoryEngine{
 			const raw=localStorage.getItem('fakestoryteller_progress');
 			if(raw){
 				const data=JSON.parse(raw);
-				if(data.unlocked) this.unlockedActs=new Set(data.unlocked);
-				if(typeof data.ch==='number') this.currentChapterIndex=data.ch;
-				if(typeof data.act==='number') this.currentActIndex=data.act;
+				if(data.unlocked){
+					const valid=data.unlocked.filter(id=>id!=='act1_1');
+					this.unlockedActs=new Set(valid.length>0?valid:['act3_1']);
+				}
+				if(data.minigames) this.unlockedMinigames=new Set(data.minigames);
+				if(typeof data.ch==='number'&&data.ch>=0&&data.ch<CHAPTERS_DATA.length) this.currentChapterIndex=data.ch;
+				if(typeof data.act==='number'&&data.act>=0&&data.act<(CHAPTERS_DATA[this.currentChapterIndex]?.acts.length||1)) this.currentActIndex=data.act;
 			}
 		}catch(e){}
 	}

@@ -13,10 +13,8 @@ const STORY_CARDS={
 	darkroom:{id:'darkroom',type:'setting',name:'Darkroom',image:'assets/images/backgrounds/Darkroom Basement Lab.png',desc:'Chemical darkroom used to develop high-resolution X-ray films.'},
 	kings_college:{id:'kings_college',type:'setting',name:"King's College",image:'assets/images/backgrounds/King_s College.png',desc:'Main quadrangle and corridors of King’s College London.'},
 	cavendish_lab:{id:'cavendish_lab',type:'setting',name:'Cavendish Lab',image:'assets/images/backgrounds/Cavendish Lab.png',desc:'The historic physics laboratory at Cambridge University.'},
-	classroom:{id:'classroom',type:'setting',name:'Classroom',image:'assets/images/backgrounds/BCURA Lab.png',desc:'School classroom where young Rosalind showed early brilliance.'},
 	rosalind:{id:'rosalind',type:'character',name:'Rosalind Franklin',image:'assets/images/characters/rosalindfranklin.png',desc:'Brilliant physical chemist and crystallographer.'},
 	rosalind_chemist:{id:'rosalind_chemist',type:'character',name:'Rosalind Franklin',image:'assets/images/characters/rosalindfranklin_chemist.png',desc:'Rosalind in her laboratory coat at King’s College.'},
-	young_rosalind:{id:'young_rosalind',type:'character',name:'Young Rosalind',image:'assets/images/characters/youngrosalind.png',desc:'Rosalind during her early school years at St Paul’s.'},
 	soldiers:{id:'soldiers',type:'character',name:'Soldiers',image:'assets/images/characters/soldiers.png',desc:'Wartime personnel needing reliable protection against poison gas.'},
 	adrienne_weill:{id:'adrienne_weill',type:'character',name:'Adrienne Weill',image:'assets/images/characters/Adrienne Weill.png',desc:'French physicist, student of Marie Curie, and mentor to Rosalind.'},
 	jacques_mering:{id:'jacques_mering',type:'character',name:'Jacques Mering',image:'assets/images/characters/Jacques Mering.png',desc:'X-ray diffraction expert who trained Rosalind in Paris.'},
@@ -29,7 +27,6 @@ const STORY_CARDS={
 	lawrence_bragg:{id:'lawrence_bragg',type:'character',name:'Lawrence Bragg',image:'assets/images/characters/Lawrence Bragg.png',desc:'Nobel laureate director of Cavendish Laboratory.'},
 	max_perutz:{id:'max_perutz',type:'character',name:'Max Perutz',image:'assets/images/characters/Max Perutz.png',desc:'MRC unit member who shared Franklin’s report.'},
 	nature_publisher:{id:'nature_publisher',type:'character',name:'Nature Journal',image:'assets/images/characters/chemistryteacher.png',desc:'Publisher of the historic April 25, 1953 DNA papers.'},
-	chemistry_teacher:{id:'chemistry_teacher',type:'character',name:'Teacher',image:'assets/images/characters/chemistryteacher.png',desc:'Science teacher recognizing Rosalind’s early gifts.'},
 	helium_cylinder:{id:'helium_cylinder',type:'item',name:'Helium Tank',image:'assets/images/items/helium gas.png',desc:'Gas cylinder used to measure micropore volume in coal.'},
 	coal_sample:{id:'coal_sample',type:'item',name:'Coal Sample',image:'assets/images/items/coal sample.png',desc:'Various carbon specimens tested for density and porosity.'},
 	pore_structure:{id:'pore_structure',type:'item',name:'Pore Structure',image:'assets/images/items/carbon pore structure.png',desc:'Microscopic molecular sieves discovered inside coal.'},
@@ -57,52 +54,20 @@ const STORY_CARDS={
 	notebook:{id:'notebook',type:'item',name:'Lab Notebook',image:'assets/images/items/Notebook.png',desc:'Franklin’s experimental notebook with measurements and proofs.'},
 	research_report:{id:'research_report',type:'item',name:'Research Report',image:'assets/images/items/Assignment Letter.png',desc:'MRC report detailing Franklin’s monoclinic C2 symmetry data.'},
 	double_helix_model:{id:'double_helix_model',type:'item',name:'Double Helix',image:'assets/images/items/3-chain helix.png',desc:'The completed antiparallel double helical DNA structure.'},
-	papers:{id:'papers',type:'item',name:'Research Papers',image:'assets/images/items/Paper.png',desc:'Published scientific articles in Nature, April 1953.'},
-	math_books:{id:'math_books',type:'item',name:'Math Books',image:'assets/images/items/Notebook.png',desc:'Advanced school mathematics texts.'}
+	papers:{id:'papers',type:'item',name:'Research Papers',image:'assets/images/items/Paper.png',desc:'Published scientific articles in Nature, April 1953.'}
+};
+
+const exactMatch=(s,chars,items,reqSetting,reqChars,reqItems)=>{
+	if(reqSetting&&s!==reqSetting) return false;
+	if(!reqSetting&&s) return false;
+	if(chars.length!==reqChars.length) return false;
+	for(let i=0;i<reqChars.length;++i) if(!chars.includes(reqChars[i])) return false;
+	if(items.length!==reqItems.length) return false;
+	for(let i=0;i<reqItems.length;++i) if(!items.includes(reqItems[i])) return false;
+	return true;
 };
 
 const CHAPTERS_DATA=[
-	{
-		id:'ch1',
-		chapterNum:1,
-		title:'Chapter 1: The Spark of Curiosity (1920-1938)',
-		bgm:'dreamy',
-		acts:[
-			{
-				id:'act1_1',
-				chapterId:'ch1',
-				actNumber:'1.1',
-				title:'Rosalind Is Frightfully Smart',
-				goal:'Rosalind demonstrates her sharp intellect!',
-				bgm:'dreamy',
-				framesCount:2,
-				availableCards:['classroom','young_rosalind','chemistry_teacher','math_books'],
-				hint:'Place Young Rosalind with her Math Books first, then let her teacher witness her brilliant solutions.',
-				introText:'At St Paul’s Girls’ School, Rosalind Franklin immediately stood out for her analytical sharpness. Long before unraveling DNA, she found beauty in the precision of mathematics and the physical sciences.',
-				frames:[
-					{
-						check:(s,chars,items)=>s==='classroom'&&chars.includes('young_rosalind')&&items.includes('math_books'),
-						solution:{setting:'classroom',characters:['young_rosalind'],items:['math_books']},
-						title:'Young Rosalind solves advanced mathematics with natural ease and clarity.',
-						sound:'pencil_writing'
-					},
-					{
-						check:(s,chars,items)=>s==='classroom'&&chars.includes('young_rosalind')&&chars.includes('chemistry_teacher'),
-						solution:{setting:'classroom',characters:['young_rosalind','chemistry_teacher'],items:[]},
-						title:'Her teacher is deeply impressed by her analytical rigor: "Frightfully smart!"',
-						sound:'applause'
-					}
-				],
-				fails:[
-					{
-						check:(s,chars,items)=>chars.includes('young_rosalind')&&items.includes('math_books')&&chars.includes('chemistry_teacher'),
-						text:'The teacher looks on as Rosalind silently finishes every single problem ahead of time.',
-						sound:'card_pickup'
-					}
-				]
-			}
-		]
-	},
 	{
 		id:'ch3',
 		chapterNum:3,
@@ -114,56 +79,56 @@ const CHAPTERS_DATA=[
 				chapterId:'ch3',
 				actNumber:'3.1',
 				title:'Rosalind Creates Gas Mask Filters',
-				goal:'Rosalind creates gas mask filters!',
+				goal:'Protective filters are an important wartime concern. At BCURA, Rosalind investigates how coal porosity affects gas absorption.',
 				bgm:'wartime',
 				framesCount:3,
 				availableCards:['bombed_london','bcura_lab','rosalind','soldiers','helium_cylinder','coal_sample','pore_structure','gas_mask'],
-				hint:'London needs protection. Rosalind tests coal with helium at BCURA, then equips soldiers with active pore filters.',
-				introText:'During the dark days of the Blitz, London suffered relentless bombardment. British soldiers urgently needed gas masks capable of filtering toxic air. At the BCURA lab, Rosalind began investigating the hidden microscopic openings in coal.',
+				hint:'London needs protection. At BCURA, use helium to investigate coal, then equip soldiers with active pore filters.',
+				introText:'Protective filters are an important wartime concern. At BCURA, Rosalind investigates how the hidden structure of coal affects the way gases enter it.',
 				frames:[
 					{
-						check:(s,chars,items)=>s==='bombed_london'&&chars.includes('soldiers')&&items.includes('gas_mask'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'bombed_london',['soldiers'],['gas_mask']),
 						solution:{setting:'bombed_london',characters:['soldiers'],items:['gas_mask']},
-						title:'London is bombed during wartime. Soldiers urgently need working gas masks to survive toxic air.',
+						title:'During the war, protective filters are urgently needed. "We need filters we can rely on," a soldier says.',
 						anim:'assets/images/animations/C3_1_Fail_01_Soldiers_Filterless_Mask_Coughing.gif',
 						sound:'bomb_explosion'
 					},
 					{
-						check:(s,chars,items)=>s==='bcura_lab'&&chars.includes('rosalind')&&items.includes('coal_sample')&&items.includes('helium_cylinder'),
+						check:(s,chars,items,frame)=>exactMatch(s,chars,items,'bcura_lab',['rosalind'],['coal_sample','helium_cylinder'])&&(frame?.gasLabSolved||false),
 						solution:{setting:'bcura_lab',characters:['rosalind'],items:['coal_sample','helium_cylinder']},
-						title:'Rosalind joins BCURA and measures coal porosity with helium gas, discovering micro-openings that trap toxic particles.',
+						title:'By measuring helium gas displacement inside coal, Rosalind discovers tiny pores acting as molecular sieves.',
 						sound:'bubbling',
 						triggerGasLab:true
 					},
 					{
-						check:(s,chars,items)=>s==='bombed_london'&&chars.includes('soldiers')&&items.includes('gas_mask')&&items.includes('pore_structure'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'bombed_london',['soldiers'],['gas_mask','pore_structure']),
 						solution:{setting:'bombed_london',characters:['soldiers'],items:['gas_mask','pore_structure']},
-						title:'Rosalind implements her pore structure data into active carbon filters. Soldiers breathe safely!',
+						title:'Rosalind connects her coal pore data to gas mask filters. Soldiers put them on and breathe safely!',
 						sound:'goal_success'
 					}
 				],
 				fails:[
 					{
-						check:(s,chars,items)=>s==='bombed_london'&&chars.includes('rosalind'),
-						text:'Rosalind ducks for cover! She cannot perform delicate lab measurements out on a bombed street.',
+						check:(s,chars)=>s==='bombed_london'&&chars.includes('rosalind'),
+						text:'Rosalind seeks cover! Precision lab tests cannot be conducted on a bombed street.',
 						anim:'assets/images/animations/C3_1_Fail_02_Rosalind_Ducking_Air_Raid.gif',
 						sound:'fail_thud'
 					},
 					{
 						check:(s,chars,items)=>s==='bcura_lab'&&chars.includes('soldiers')&&items.includes('helium_cylinder'),
-						text:'Soldiers stare at the helium cylinder in bewilderment. They do not know laboratory gas protocols.',
+						text:'Soldiers look at the helium tank with question marks. They do not know lab gas methods.',
 						anim:'assets/images/animations/C3_1_Fail_03_Soldiers_Confused_Helium_Tank.gif',
 						sound:'wood_thud'
 					},
 					{
 						check:(s,chars,items)=>s==='bcura_lab'&&chars.includes('rosalind')&&items.includes('coal_sample')&&!items.includes('helium_cylinder'),
-						text:'Rosalind looks at the plain coal sample. Without helium gas flow, micropores cannot be measured.',
+						text:'Rosalind inspects the plain coal. Without helium gas flow, micropores cannot be measured.',
 						anim:'assets/images/animations/C3_1_Fail_04_Rosalind_Wrong_Coal_Inspection.gif',
 						sound:'fail_thud'
 					},
 					{
 						check:(s,chars,items)=>s==='bombed_london'&&chars.includes('soldiers')&&items.includes('coal_sample'),
-						text:'Soldiers press raw black coal directly against their mouths. Soot covers their faces while smoke still enters!',
+						text:'Soldiers hold raw black coal to their faces. They get smeared with soot while toxic fumes still enter!',
 						anim:'assets/images/animations/C3_1_Fail_05_Soldiers_Coal_On_Face_Coughing.gif',
 						sound:'fail_thud'
 					}
@@ -174,55 +139,55 @@ const CHAPTERS_DATA=[
 				chapterId:'ch3',
 				actNumber:'3.2',
 				title:'Rosalind Moves to Paris',
-				goal:'Rosalind moves to Paris!',
+				goal:'After her coal research, Rosalind turns to mentor Adrienne Weill to find research connections and opportunities in France.',
 				bgm:'paris',
 				framesCount:4,
 				availableCards:['paris_station','paris_lab','rosalind','adrienne_weill','jacques_mering','sealed_letter','baggage'],
-				hint:'Rosalind sends a witty letter to Weill, who recommends her to Mering. Rosalind arrives at the station, then enters the lab.',
-				introText:'Eager to expand her expertise into X-ray crystallography, Rosalind sought training in France. Through her mentor Adrienne Weill, she connected with Jacques Mering in Paris, entering a collaborative and egalitarian scientific community.',
+				hint:'Rosalind needs a connection before she travels. Begin with her letter to Adrienne, then the introduction to Mering.',
+				introText:'After her coal research, Rosalind begins looking for a new opportunity. She turns to Adrienne Weill, who can help her find research connections in France.',
 				frames:[
 					{
-						check:(s,chars,items)=>chars.includes('rosalind')&&chars.includes('adrienne_weill')&&items.includes('sealed_letter'),
-						solution:{setting:'paris_lab',characters:['rosalind','adrienne_weill'],items:['sealed_letter']},
-						title:'Rosalind writes to Adrienne Weill: "Find a job for someone who knows very little about physics but a lot about holes in coal."',
+						check:(s,chars,items)=>exactMatch(null,chars,items,null,['rosalind','adrienne_weill'],['sealed_letter']),
+						solution:{setting:null,characters:['rosalind','adrienne_weill'],items:['sealed_letter']},
+						title:'Rosalind writes to mentor Adrienne Weill: "Find a job for someone who knows very little chemistry but a lot about holes in coal."',
 						anim:'assets/images/animations/C3_2_Rosalind_Writes_Letter_ACTION_TRANSPARENT.gif',
 						sound:'pencil_writing'
 					},
 					{
-						check:(s,chars,items)=>chars.includes('adrienne_weill')&&chars.includes('jacques_mering')&&items.includes('sealed_letter'),
-						solution:{setting:'paris_lab',characters:['adrienne_weill','jacques_mering'],items:['sealed_letter']},
-						title:'Adrienne Weill stamps her recommendation and forwards the letter to scientist Jacques Mering in Paris.',
+						check:(s,chars,items)=>exactMatch(null,chars,items,null,['adrienne_weill','jacques_mering'],['sealed_letter']),
+						solution:{setting:null,characters:['adrienne_weill','jacques_mering'],items:['sealed_letter']},
+						title:'Adrienne Weill stamps her recommendation and introduces Rosalind to Jacques Mering in Paris.',
 						anim:'assets/images/animations/C3_2_Document_Stamp_Preview_Rosalind_ACTION_TRANSPARENT.gif',
 						sound:'paper_slide'
 					},
 					{
-						check:(s,chars,items)=>s==='paris_station'&&chars.includes('rosalind'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'paris_station',['rosalind'],['baggage'])||exactMatch(s,chars,items,'paris_station',['rosalind'],[]),
 						solution:{setting:'paris_station',characters:['rosalind'],items:['baggage']},
-						title:'Rosalind steps off the steam train in Paris with her suitcase, ready to embrace life and science in France.',
+						title:'Rosalind arrives at the Paris train station with her suitcase, stepping into a new scientific world.',
 						sound:'train_whistle'
 					},
 					{
-						check:(s,chars,items)=>s==='paris_lab'&&chars.includes('rosalind')&&chars.includes('jacques_mering'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'paris_lab',['rosalind','jacques_mering'],[]),
 						solution:{setting:'paris_lab',characters:['rosalind','jacques_mering'],items:[]},
-						title:'Jacques Mering warmly welcomes Rosalind into the laboratory and introduces her to state-of-the-art X-ray equipment.',
+						title:'Jacques Mering welcomes Rosalind into the laboratory and introduces her to X-ray crystallography equipment.',
 						anim:'assets/images/animations/C3_2_Rosalind_Handshake_Colleague_ACTION_TRANSPARENT.gif',
 						sound:'goal_success'
 					}
 				],
 				fails:[
 					{
-						check:(s,chars,items)=>chars.includes('rosalind')&&chars.includes('jacques_mering')&&s==='paris_station',
-						text:'Rosalind and Mering walk past each other as complete strangers on the platform.',
+						check:(s,chars)=>s==='paris_station'&&chars.includes('rosalind')&&chars.includes('jacques_mering'),
+						text:'Rosalind and Mering walk past each other as complete strangers on the station platform.',
 						sound:'wood_thud'
 					},
 					{
-						check:(s,chars,items)=>s==='paris_station'&&chars.includes('adrienne_weill'),
-						text:'Adrienne Weill stands alone on the station platform, repeatedly checking her wristwatch.',
+						check:(s,chars)=>s==='paris_station'&&chars.includes('adrienne_weill'),
+						text:'Adrienne Weill stands on the train platform alone, checking her watch.',
 						sound:'wood_thud'
 					},
 					{
 						check:(s,chars,items)=>chars.includes('jacques_mering')&&items.includes('sealed_letter')&&!chars.includes('adrienne_weill'),
-						text:'Mering stares at a blank paper. Without Weill’s recommendation, he does not know who Rosalind is.',
+						text:'Mering stares at a blank paper because he does not know who Rosalind is.',
 						sound:'fail_thud'
 					}
 				]
@@ -232,53 +197,53 @@ const CHAPTERS_DATA=[
 				chapterId:'ch3',
 				actNumber:'3.3',
 				title:'Rosalind Classifies Carbon',
-				goal:'Rosalind classifies carbon into Graphitizing and Non-graphitizing carbon!',
+				goal:'Rosalind explores hidden carbon structures by capturing and analyzing how X-rays scatter onto photographic film.',
 				bgm:'tension',
 				framesCount:3,
 				availableCards:['paris_lab','rosalind','male_scientists','xray_beam','amorphous_carbon','film','math_models','carbon_chart'],
-				hint:'Scientists cannot solve disordered carbon. Rosalind shines a collimated X-ray beam onto film, then decodes it using math models.',
-				introText:'In post-war Paris, amorphous carbon posed a major puzzle: why did some carbons turn into graphite when heated while others resisted? Other scientists struggled with messy data, but Franklin brought unmatched experimental precision.',
+				hint:'Colleagues struggle with disordered carbon. Rosalind shines an X-ray beam onto film, then applies math models.',
+				introText:'Rosalind now has a new way to explore structures hidden inside materials: X-rays leave patterns on photographic film, revealing internal order.',
 				frames:[
 					{
-						check:(s,chars,items)=>s==='paris_lab'&&chars.includes('male_scientists')&&items.includes('amorphous_carbon'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'paris_lab',['male_scientists'],['amorphous_carbon']),
 						solution:{setting:'paris_lab',characters:['male_scientists'],items:['amorphous_carbon']},
-						title:'Other scientists cannot understand the structural disorder inside amorphous carbon samples.',
+						title:'Other scientists cannot understand the structural pattern of disordered carbon samples.',
 						anim:'assets/images/animations/C3_3_Scientists_Confused_Discussion_ACTION_TRANSPARENT.gif',
 						sound:'wood_thud'
 					},
 					{
-						check:(s,chars,items)=>s==='paris_lab'&&chars.includes('rosalind')&&items.includes('xray_beam')&&items.includes('amorphous_carbon')&&items.includes('film'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'paris_lab',['rosalind'],['xray_beam','amorphous_carbon','film']),
 						solution:{setting:'paris_lab',characters:['rosalind'],items:['xray_beam','amorphous_carbon','film']},
-						title:'Rosalind aligns a fine X-ray beam through the carbon sample, capturing subtle diffraction rings on film.',
+						title:'Rosalind aligns a fine X-ray beam through the carbon sample, recording diffraction rings on film.',
 						anim:'assets/images/animations/C3_3_Rosalind_Adjusts_Xray_Equipment_ACTION_TRANSPARENT.gif',
 						sound:'xray_machine'
 					},
 					{
-						check:(s,chars,items)=>s==='paris_lab'&&chars.includes('rosalind')&&items.includes('film')&&items.includes('math_models')&&items.includes('carbon_chart'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'paris_lab',['rosalind'],['film','math_models','carbon_chart']),
 						solution:{setting:'paris_lab',characters:['rosalind'],items:['film','math_models','carbon_chart']},
-						title:'Applying rigorous mathematical Fourier models to the diffraction spots, Rosalind proves the two carbon categories!',
+						title:'Using mathematical Fourier models, Rosalind proves carbon splits into graphitizing and non-graphitizing forms!',
 						sound:'goal_success'
 					}
 				],
 				fails:[
 					{
 						check:(s,chars,items)=>s==='paris_lab'&&chars.includes('rosalind')&&items.includes('film')&&items.includes('carbon_chart')&&!items.includes('math_models'),
-						text:'Rosalind squints at the blurry film. Without mathematical models, she cannot prove the atomic coordinates.',
+						text:'Rosalind looks at blurry film spots. Without math calculations, she cannot prove the atomic pattern.',
 						sound:'fail_thud'
 					},
 					{
 						check:(s,chars,items)=>s==='paris_lab'&&chars.includes('male_scientists')&&items.includes('xray_beam')&&items.includes('amorphous_carbon'),
-						text:'Scientists adjust the beam haphazardly. The film is completely overexposed by a blinding flash!',
+						text:'Scientists crank the voltage dial carelessly. A blinding flash pops and ruins the film!',
 						sound:'fail_thud'
 					},
 					{
 						check:(s,chars,items)=>s==='paris_lab'&&chars.includes('rosalind')&&items.includes('math_models')&&items.includes('amorphous_carbon')&&!items.includes('film'),
-						text:'Rosalind holds a pen poised to calculate, but has no diffraction data to work with.',
+						text:'Rosalind holds a pen ready to calculate, but has no diffraction data to work with.',
 						sound:'fail_thud'
 					},
 					{
 						check:(s,chars,items)=>s==='paris_lab'&&chars.includes('male_scientists')&&items.includes('film')&&items.includes('math_models'),
-						text:'The scientists look at the complex formulas as dizzy question marks spin overhead.',
+						text:'The scientists look at complicated formulas with swirling question marks over their heads.',
 						sound:'wood_thud'
 					}
 				]
@@ -288,31 +253,31 @@ const CHAPTERS_DATA=[
 				chapterId:'ch3',
 				actNumber:'3.4',
 				title:"Rosalind's Belief",
-				goal:"Rosalind's belief!",
+				goal:'Amid Parisian lab debates and alpine hikes, Rosalind articulates her personal creed on scientific dedication and faith.',
 				bgm:'paris',
 				framesCount:3,
 				availableCards:['paris_lab','snow_mountains','rosalind','male_scientists','lunch','desk','sealed_letter'],
-				hint:'Rosalind debates over lunch with colleagues, recharges hiking in the Alps, and pens her personal creed to her father.',
-				introText:'In France, Rosalind enjoyed camaraderie and equality among colleagues. Her father often challenged her scientific devotion, asking about faith and purpose. In response, Rosalind articulated a noble humanistic philosophy.',
+				hint:'Rosalind debates over lunch with colleagues, recharges hiking in the Alps, and writes a letter of faith at her desk.',
+				introText:'In France, Rosalind enjoyed camaraderie and equality. Answering her father’s questions on faith and science, she articulated her noble philosophy.',
 				frames:[
 					{
-						check:(s,chars,items)=>s==='paris_lab'&&chars.includes('rosalind')&&chars.includes('male_scientists')&&items.includes('lunch'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'paris_lab',['rosalind','male_scientists'],['lunch']),
 						solution:{setting:'paris_lab',characters:['rosalind','male_scientists'],items:['lunch']},
-						title:'Rosalind and her French colleagues debate scientific ideas freely while enjoying lunch baguettes.',
+						title:'Rosalind and French colleagues debate scientific ideas around the lab bench over lunch.',
 						anim:'assets/images/animations/C3_4_French_Colleagues_Lunch_Debate_GameReady.gif',
 						sound:'children_laugh'
 					},
 					{
-						check:(s,chars,items)=>s==='snow_mountains'&&chars.includes('rosalind'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'snow_mountains',['rosalind'],[]),
 						solution:{setting:'snow_mountains',characters:['rosalind'],items:[]},
-						title:'Rosalind hikes through alpine snowy ridges, drawing renewed energy and perspective from the great outdoors.',
+						title:'Rosalind hikes through alpine snowy ridges, drawing renewed energy from the mountain air.',
 						anim:'assets/images/animations/C3_4_Rosalind_Alpine_Hiking_GameReady.gif',
 						sound:'chime'
 					},
 					{
-						check:(s,chars,items)=>s==='paris_lab'&&chars.includes('rosalind')&&items.includes('desk')&&items.includes('sealed_letter'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'paris_lab',['rosalind'],['desk','sealed_letter']),
 						solution:{setting:'paris_lab',characters:['rosalind'],items:['desk','sealed_letter']},
-						title:'At her desk, Rosalind writes to her father: "All that is necessary for faith is the belief that by doing our best we shall come nearer to success."',
+						title:'At her desk, Rosalind writes: "All that is necessary for faith is the belief that by doing our best we shall come nearer to success."',
 						anim:'assets/images/animations/C3_4_Rosalind_Reflective_Writing_Preview.gif',
 						sound:'pencil_writing'
 					}
@@ -320,19 +285,19 @@ const CHAPTERS_DATA=[
 				fails:[
 					{
 						check:(s,chars,items)=>s==='snow_mountains'&&chars.includes('rosalind')&&items.includes('sealed_letter'),
-						text:'A ferocious gust of mountain wind rips loose papers from her hands, scattering them down the snowy peak!',
+						text:'A ferocious gust of mountain wind rips loose papers from her hands, scattering them down the peak!',
 						anim:'assets/images/animations/C3_4_Fail_01_Flying_Papers_GameReady.gif',
 						sound:'fail_thud'
 					},
 					{
 						check:(s,chars,items)=>chars.includes('male_scientists')&&items.includes('sealed_letter'),
-						text:'Her colleagues politely avert their gaze and turn away to respect Rosalind’s privacy.',
+						text:'Colleagues politely turn away to preserve Franklin’s personal privacy.',
 						anim:'assets/images/animations/C3_4_Fail_02_Colleagues_Turn_Away_GameReady.gif',
 						sound:'wood_thud'
 					},
 					{
 						check:(s,chars,items)=>s==='snow_mountains'&&chars.includes('rosalind')&&items.includes('lunch'),
-						text:'Unwrapping lunch in subzero winds, Rosalind shivers violently and rapidly packs her food away!',
+						text:'Unwrapping a sandwich on a freezing mountain peak, Rosalind shivers violently and packs it away!',
 						anim:'assets/images/animations/C3_4_Fail_03_Freezing_On_Mountain_GameReady.gif',
 						sound:'fail_thud'
 					}
@@ -351,47 +316,47 @@ const CHAPTERS_DATA=[
 				chapterId:'ch4',
 				actNumber:'4.1',
 				title:'Rosalind Begins DNA Research and Isolation',
-				goal:'Rosalind begins DNA research and isolation!',
+				goal:'Rosalind joins King’s College London to lead DNA research, facing institutional barriers and administrative ambiguity.',
 				bgm:'mysterious',
 				framesCount:4,
 				availableCards:['randall_office','common_room','basement_room','rosalind_chemist','john_randall','maurice_wilkins','assignment_letter','lunch'],
 				hint:'Director Randall gives Rosalind the assignment letter. Wilkins treats her as an assistant. Wilkins enjoys the common room, but Rosalind is excluded.',
-				introText:'In 1951, Rosalind accepted a fellowship at King’s College London to upgrade their X-ray capabilities on biological fibers. However, patriarchal customs and administrative ambiguity created deep tension from her very first day.',
+				introText:'In 1951, Rosalind accepted a fellowship at King’s College London. Administrative ambiguity and patriarchal customs created deep friction from day one.',
 				frames:[
 					{
-						check:(s,chars,items)=>s==='randall_office'&&chars.includes('john_randall')&&chars.includes('rosalind_chemist')&&items.includes('assignment_letter'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'randall_office',['john_randall','rosalind_chemist'],['assignment_letter']),
 						solution:{setting:'randall_office',characters:['john_randall','rosalind_chemist'],items:['assignment_letter']},
-						title:'Director John Randall issues an official letter appointing Rosalind to lead the laboratory’s DNA X-ray investigation.',
+						title:'Director John Randall issues an official letter appointing Rosalind to lead DNA X-ray research.',
 						sound:'paper_slide'
 					},
 					{
-						check:(s,chars,items)=>s==='basement_room'&&chars.includes('maurice_wilkins')&&chars.includes('rosalind_chemist'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'basement_room',['maurice_wilkins','rosalind_chemist'],[]),
 						solution:{setting:'basement_room',characters:['maurice_wilkins','rosalind_chemist'],items:[]},
-						title:'Maurice Wilkins misinterprets Randall’s letters and mistakenly assumes Rosalind was hired as his assistant.',
+						title:'Maurice Wilkins misinterprets her appointment and assumes Rosalind was hired as his assistant.',
 						sound:'fail_thud'
 					},
 					{
-						check:(s,chars,items)=>s==='common_room'&&chars.includes('maurice_wilkins')&&items.includes('lunch'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'common_room',['maurice_wilkins'],['lunch']),
 						solution:{setting:'common_room',characters:['maurice_wilkins'],items:['lunch']},
-						title:'Wilkins and male faculty enjoy warm lunch and pipe tobacco inside King’s Senior Common Room.',
+						title:'Wilkins and male academics enjoy lunch in King’s Senior Common Room.',
 						sound:'card_pickup'
 					},
 					{
-						check:(s,chars,items)=>s==='basement_room'&&chars.includes('rosalind_chemist')&&items.includes('lunch'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'basement_room',['rosalind_chemist'],['lunch']),
 						solution:{setting:'basement_room',characters:['rosalind_chemist'],items:['lunch']},
-						title:'Barred from the male-only common room, Rosalind eats lunch alone at her basement desk, resolute and focused.',
+						title:'Barred from the male-only room, Rosalind eats lunch alone in her basement lab, resolute and focused.',
 						sound:'goal_success'
 					}
 				],
 				fails:[
 					{
-						check:(s,chars,items)=>s==='common_room'&&chars.includes('rosalind_chemist'),
-						text:'The oak door slams shut! King’s College Senior Common Room strictly enforces its male-only rule.',
+						check:(s,chars)=>s==='common_room'&&chars.includes('rosalind_chemist'),
+						text:'The oak door slams shut! King’s College Common Room strictly enforces its male-only rule.',
 						sound:'fail_thud'
 					},
 					{
 						check:(s,chars,items)=>s==='basement_room'&&chars.includes('rosalind_chemist')&&chars.includes('maurice_wilkins')&&items.includes('lunch'),
-						text:'An agonizing awkward silence falls over the basement. Wilkins sweats uncomfortably and scurries upstairs.',
+						text:'An awkward silence descends over the basement. Wilkins sweats nervously and scurries upstairs.',
 						sound:'fail_thud'
 					}
 				]
@@ -401,42 +366,42 @@ const CHAPTERS_DATA=[
 				chapterId:'ch4',
 				actNumber:'4.2',
 				title:'Rosalind Separates Two DNA States',
-				goal:'Rosalind separates two DNA states!',
+				goal:'Rosalind investigates whether DNA structure depends on moisture, setting up controlled humidity experiments.',
 				bgm:'mysterious',
 				framesCount:4,
 				availableCards:['basement_lab','rosalind_chemist','dna_fibers','xray_camera','dry_chamber','humid_chamber','form_a','form_b'],
 				hint:'Random humidity causes blurry films. Rosalind isolates Form A in dry air, Form B in humid air, and compares both.',
-				introText:'Before Franklin, researchers struggled with contradictory X-ray pictures of DNA because fibers randomly gained and lost moisture. Rosalind realized DNA possessed two fundamentally distinct structural states governed by water.',
+				introText:'Before Franklin, researchers struggled with contradictory X-ray pictures of DNA because fibers randomly gained and lost ambient moisture.',
 				frames:[
 					{
-						check:(s,chars,items)=>s==='basement_lab'&&items.includes('dna_fibers')&&items.includes('xray_camera')&&!chars.includes('rosalind_chemist'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'basement_lab',[],['dna_fibers','xray_camera']),
 						solution:{setting:'basement_lab',characters:[],items:['dna_fibers','xray_camera']},
-						title:'Uncontrolled room humidity produces blurry, overlapping diffraction smears on the X-ray plate.',
+						title:'Without humidity control, random moisture produces blurry, unreadable diffraction smears.',
 						sound:'fail_thud'
 					},
 					{
-						check:(s,chars,items)=>s==='basement_lab'&&chars.includes('rosalind_chemist')&&items.includes('dna_fibers')&&items.includes('dry_chamber'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'basement_lab',['rosalind_chemist'],['dna_fibers','dry_chamber']),
 						solution:{setting:'basement_lab',characters:['rosalind_chemist'],items:['dna_fibers','dry_chamber']},
-						title:'Under dry conditions (<50% humidity), Rosalind isolates Form A: crystalline geometric diffraction spots.',
+						title:'Under dry conditions (<50% humidity), Rosalind isolates Form A: crystalline diffraction spots.',
 						sound:'camera_shutter'
 					},
 					{
-						check:(s,chars,items)=>s==='basement_lab'&&chars.includes('rosalind_chemist')&&items.includes('dna_fibers')&&items.includes('humid_chamber'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'basement_lab',['rosalind_chemist'],['dna_fibers','humid_chamber']),
 						solution:{setting:'basement_lab',characters:['rosalind_chemist'],items:['dna_fibers','humid_chamber']},
-						title:'Under humid conditions (>75% humidity), Rosalind isolates Form B: a striking helical diffraction cross.',
+						title:'Under humid conditions (>75% humidity), Rosalind isolates Form B: a distinct helical cross pattern.',
 						sound:'camera_shutter'
 					},
 					{
-						check:(s,chars,items)=>s==='basement_lab'&&chars.includes('rosalind_chemist')&&items.includes('form_a')&&items.includes('form_b'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'basement_lab',['rosalind_chemist'],['form_a','form_b']),
 						solution:{setting:'basement_lab',characters:['rosalind_chemist'],items:['form_a','form_b']},
-						title:'Comparing both films against the light table, Rosalind proves that DNA reversibly transitions between two forms!',
+						title:'Comparing both films against the light table, Rosalind proves DNA reversibly transitions between two shapes!',
 						sound:'goal_success'
 					}
 				],
 				fails:[
 					{
 						check:(s,chars,items)=>s==='basement_lab'&&chars.includes('rosalind_chemist')&&items.includes('dna_fibers')&&!items.includes('xray_camera')&&!items.includes('dry_chamber')&&!items.includes('humid_chamber'),
-						text:'Rosalind holds the fiber up to the ceiling lamp. To the naked eye, it looks like an ordinary thread.',
+						text:'Rosalind holds the fiber up to the ceiling lamp. To the naked eye, it looks like plain thread.',
 						sound:'fail_thud'
 					}
 				]
@@ -446,35 +411,35 @@ const CHAPTERS_DATA=[
 				chapterId:'ch4',
 				actNumber:'4.3',
 				title:'Watson and Crick Are Stopped from Building Their Model',
-				goal:'Watson and Crick are stopped from building their model!',
+				goal:'Watson and Crick build an early DNA model, but a convincing arrangement must agree with experimental findings.',
 				bgm:'tension',
 				framesCount:4,
 				availableCards:['lecture_hall','cambridge_lab','rosalind_chemist','james_watson','francis_crick','lawrence_bragg','wire_model','water'],
-				hint:'Rosalind lectures on the necessity of water. Watson and Crick build an inside-out model. Rosalind pours water over it, and Bragg halts them.',
-				introText:'In late 1951, Watson attended Rosalind’s colloquium at King’s. Mistaking or ignoring her measurements on water content, Watson and Crick rushed to build a physical model with phosphate backbones on the inside.',
+				hint:'Rosalind lectures on the necessity of water. Watson and Crick build an inside-out model. Rosalind tests it, and Bragg halts them.',
+				introText:'In 1951, Watson attended Rosalind’s lecture at King’s. Ignoring her findings on water, Watson and Crick built an inside-out model.',
 				frames:[
 					{
-						check:(s,chars,items)=>s==='lecture_hall'&&chars.includes('rosalind_chemist')&&chars.includes('james_watson'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'lecture_hall',['rosalind_chemist','james_watson'],[]),
 						solution:{setting:'lecture_hall',characters:['rosalind_chemist','james_watson'],items:[]},
-						title:'Rosalind lectures on DNA hydration, stressing water must coat the exterior. Watson listens casually without taking notes.',
+						title:'Rosalind stresses water must coat DNA exterior. Watson listens casually without taking notes.',
 						sound:'card_pickup'
 					},
 					{
-						check:(s,chars,items)=>s==='cambridge_lab'&&chars.includes('james_watson')&&chars.includes('francis_crick')&&items.includes('wire_model'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'cambridge_lab',['james_watson','francis_crick'],['wire_model']),
 						solution:{setting:'cambridge_lab',characters:['james_watson','francis_crick'],items:['wire_model']},
-						title:'Relying on Watson’s faulty memory, Watson and Crick assemble a brass model with phosphates crammed on the inside.',
+						title:'Watson and Crick assemble a brass model with phosphates erroneously placed on the inside.',
 						sound:'wire_collapse'
 					},
 					{
-						check:(s,chars,items)=>s==='cambridge_lab'&&chars.includes('rosalind_chemist')&&items.includes('wire_model')&&items.includes('water'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'cambridge_lab',['rosalind_chemist'],['wire_model','water']),
 						solution:{setting:'cambridge_lab',characters:['rosalind_chemist'],items:['wire_model','water']},
-						title:'Rosalind inspects the model and tests it with water, proving an inside-out structure is chemically unviable in water.',
+						title:'Rosalind tests their model with water, proving an inside-out structure cannot survive in water.',
 						sound:'model_collapse'
 					},
 					{
-						check:(s,chars,items)=>s==='cambridge_lab'&&chars.includes('lawrence_bragg')&&chars.includes('james_watson')&&chars.includes('francis_crick'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'cambridge_lab',['lawrence_bragg','james_watson','francis_crick'],[]),
 						solution:{setting:'cambridge_lab',characters:['lawrence_bragg','james_watson','francis_crick'],items:[]},
-						title:'Lab director Sir Lawrence Bragg strictly orders Watson and Crick to stop their DNA model-building immediately.',
+						title:'Director Lawrence Bragg strictly orders Watson and Crick to halt all DNA model-building.',
 						sound:'goal_success'
 					}
 				],
@@ -485,13 +450,13 @@ const CHAPTERS_DATA=[
 						sound:'bubbling'
 					},
 					{
-						check:(s,chars,items)=>s==='lecture_hall'&&chars.includes('james_watson')&&chars.includes('francis_crick'),
+						check:(s,chars)=>s==='lecture_hall'&&chars.includes('james_watson')&&chars.includes('francis_crick'),
 						text:'Watson and Crick try to lecture without empirical data. The audience stares with question marks.',
 						sound:'fail_thud'
 					},
 					{
 						check:(s,chars,items)=>chars.includes('lawrence_bragg')&&chars.includes('james_watson')&&items.includes('wire_model')&&!items.includes('water'),
-						text:'Bragg admires the shiny brass model before learning of its structural errors.',
+						text:'Bragg admires the shiny metal model before discovering its chemical failure.',
 						sound:'wood_thud'
 					}
 				]
@@ -501,58 +466,58 @@ const CHAPTERS_DATA=[
 				chapterId:'ch4',
 				actNumber:'4.4',
 				title:'Rosalind Produces Photo 51 and Decodes It',
-				goal:'Rosalind produces Photo 51 and decodes it!',
+				goal:'A clear photograph requires a carefully prepared sample, controlled conditions, and a continuous 62-hour X-ray exposure.',
 				bgm:'mysterious',
 				framesCount:5,
 				availableCards:['basement_lab','darkroom','rosalind_chemist','raymond_gosling','humid_chamber','xray_camera','stopwatch','film','photo_51','notebook'],
 				hint:'Mount fiber in humidity chamber, run 62-hour exposure with stopwatch, develop film in darkroom, examine Photo 51, and calculate in notebook.',
-				introText:'In May 1952, Franklin and her student Raymond Gosling set up a fine-focus collimator with controlled hydrogen hydration. After an unbroken 62-hour exposure, they extracted the sharpest diffraction pattern ever obtained: Photograph 51.',
+				introText:'In May 1952, Franklin and student Raymond Gosling set up a fine-focus camera. After 62 hours of continuous exposure, they extracted Photograph 51.',
 				frames:[
 					{
-						check:(s,chars,items)=>s==='basement_lab'&&chars.includes('rosalind_chemist')&&chars.includes('raymond_gosling')&&items.includes('humid_chamber'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'basement_lab',['rosalind_chemist','raymond_gosling'],['humid_chamber']),
 						solution:{setting:'basement_lab',characters:['rosalind_chemist','raymond_gosling'],items:['humid_chamber']},
-						title:'Rosalind and Gosling carefully mount a pristine DNA fiber inside the precision humidity chamber.',
+						title:'Rosalind and Gosling carefully mount a DNA fiber inside the precision humidity chamber.',
 						sound:'card_pickup'
 					},
 					{
-						check:(s,chars,items)=>s==='basement_lab'&&chars.includes('rosalind_chemist')&&chars.includes('raymond_gosling')&&items.includes('xray_camera')&&items.includes('stopwatch'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'basement_lab',['rosalind_chemist','raymond_gosling'],['xray_camera','stopwatch']),
 						solution:{setting:'basement_lab',characters:['rosalind_chemist','raymond_gosling'],items:['xray_camera','stopwatch']},
-						title:'They begin a continuous 62-hour X-ray exposure, maintaining exact temperature and humidity parameters.',
+						title:'They begin an unbroken 62-hour X-ray exposure, maintaining constant hydration parameters.',
 						sound:'xray_machine'
 					},
 					{
-						check:(s,chars,items)=>s==='darkroom'&&chars.includes('raymond_gosling')&&items.includes('film')&&items.includes('photo_51'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'darkroom',['raymond_gosling'],['film','photo_51']),
 						solution:{setting:'darkroom',characters:['raymond_gosling'],items:['film','photo_51']},
-						title:'In the chemical darkroom bath, Gosling develops the plate, unveiling the iconic Photograph 51.',
+						title:'In the darkroom chemical bath, Gosling develops the plate, unveiling the historic Photograph 51.',
 						sound:'camera_shutter'
 					},
 					{
-						check:(s,chars,items)=>s==='basement_lab'&&chars.includes('rosalind_chemist')&&items.includes('photo_51')&&!items.includes('notebook'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'basement_lab',['rosalind_chemist'],['photo_51']),
 						solution:{setting:'basement_lab',characters:['rosalind_chemist'],items:['photo_51']},
-						title:'Rosalind studies the distinctive X-shaped cross on Photograph 51: direct physical proof of a helical geometry.',
+						title:'Rosalind studies the distinctive X-shaped cross on Photograph 51: direct physical proof of a helix.',
 						sound:'chime'
 					},
 					{
-						check:(s,chars,items)=>s==='basement_lab'&&chars.includes('rosalind_chemist')&&items.includes('photo_51')&&items.includes('notebook'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'basement_lab',['rosalind_chemist'],['photo_51','notebook']),
 						solution:{setting:'basement_lab',characters:['rosalind_chemist'],items:['photo_51','notebook']},
-						title:'In her notebook, Rosalind calculates the dimensions: a 34Å repeat, 10 layers per turn, and two intertwined chains.',
+						title:'In her notebook, Rosalind calculates helical dimensions: 34Å repeat and two intertwined strands.',
 						sound:'goal_success'
 					}
 				],
 				fails:[
 					{
 						check:(s,chars,items)=>s==='darkroom'&&chars.includes('raymond_gosling')&&items.includes('film')&&!items.includes('photo_51'),
-						text:'Gosling develops the film prematurely. The plate comes out completely blank without an image.',
+						text:'Gosling develops the film too early. It turns out completely blank with no image.',
 						sound:'fail_thud'
 					},
 					{
 						check:(s,chars,items)=>s==='basement_lab'&&chars.includes('raymond_gosling')&&items.includes('xray_camera')&&!chars.includes('rosalind_chemist'),
-						text:'Without Rosalind’s guidance, Gosling fumbles the pinhole collimator alignment and misses the fiber.',
+						text:'Without Rosalind’s guidance, Gosling fumbles camera alignment and misses the fiber.',
 						sound:'fail_thud'
 					},
 					{
 						check:(s,chars,items)=>chars.includes('rosalind_chemist')&&items.includes('notebook')&&!items.includes('photo_51'),
-						text:'Rosalind holds her pen over an empty page. She refuses to hypothesize without solid empirical data.',
+						text:'Rosalind holds her pen over an empty page. She refuses to hypothesize without empirical data.',
 						sound:'fail_thud'
 					}
 				]
@@ -562,41 +527,41 @@ const CHAPTERS_DATA=[
 				chapterId:'ch4',
 				actNumber:'4.5',
 				title:"Rosalind's Double Helix Model Is Completed with Noble Scientific Grace",
-				goal:"Rosalind's double helix model is completed with noble scientific grace!",
+				goal:'Photograph 51 and Franklin’s report reach Watson and Crick, helping them complete their double-helix model.',
 				bgm:'sad',
 				framesCount:5,
 				availableCards:['kings_college','cavendish_lab','rosalind_chemist','maurice_wilkins','james_watson','francis_crick','max_perutz','nature_publisher','photo_51','research_report','double_helix_model','papers','baggage'],
-				hint:'Wilkins shows Photo 51 to Watson. Perutz gives the MRC report to Crick. Crick finishes the model. Nature publishes the papers, and Rosalind moves forward.',
-				introText:'In early 1953, Photograph 51 and Franklin’s unpublished MRC report reached Watson and Crick without her knowledge. Armed with her data on C2 monoclinic space group symmetry, they deduced the antiparallel double helix.',
+				hint:'Wilkins shows Photo 51 to Watson. Perutz shares the MRC report with Crick. Crick finishes the model. Nature publishes.',
+				introText:'In early 1953, Photograph 51 and Franklin’s MRC report reached Watson and Crick. Using her space-group data, they deduced the antiparallel double helix.',
 				frames:[
 					{
-						check:(s,chars,items)=>s==='kings_college'&&chars.includes('maurice_wilkins')&&chars.includes('james_watson')&&items.includes('photo_51'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'kings_college',['maurice_wilkins','james_watson'],['photo_51']),
 						solution:{setting:'kings_college',characters:['maurice_wilkins','james_watson'],items:['photo_51']},
-						title:'Wilkins retrieves Photograph 51 from King’s and reveals it to Watson without Franklin’s knowledge.',
+						title:'Wilkins retrieves Photograph 51 and reveals it to Watson without Franklin’s knowledge.',
 						sound:'paper_slide'
 					},
 					{
-						check:(s,chars,items)=>s==='cavendish_lab'&&chars.includes('max_perutz')&&chars.includes('francis_crick')&&items.includes('research_report'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'cavendish_lab',['max_perutz','francis_crick'],['research_report']),
 						solution:{setting:'cavendish_lab',characters:['max_perutz','francis_crick'],items:['research_report']},
-						title:'Max Perutz shares Franklin’s unpublished MRC report and quantitative measurements with Crick.',
+						title:'Max Perutz shares Franklin’s unpublished MRC report and measurements with Crick.',
 						sound:'paper_slide'
 					},
 					{
-						check:(s,chars,items)=>s==='cavendish_lab'&&chars.includes('francis_crick')&&items.includes('research_report')&&items.includes('double_helix_model'),
+						check:(s,chars,items)=>exactMatch(s,chars,items,'cavendish_lab',['francis_crick'],['research_report','double_helix_model']),
 						solution:{setting:'cavendish_lab',characters:['francis_crick'],items:['research_report','double_helix_model']},
-						title:'Using Franklin’s space-group symmetry, Crick deduces that the two DNA strands run antiparallel.',
+						title:'Using Franklin’s space-group symmetry, Crick deduces the two strands run antiparallel.',
 						sound:'wire_collapse'
 					},
 					{
-						check:(s,chars,items)=>items.includes('papers')&&chars.includes('nature_publisher'),
-						solution:{setting:'cavendish_lab',characters:['nature_publisher'],items:['papers']},
+						check:(s,chars,items)=>exactMatch(null,chars,items,null,['nature_publisher'],['papers']),
+						solution:{setting:null,characters:['nature_publisher'],items:['papers']},
 						title:'Nature publishes Watson and Crick’s model alongside Franklin and Gosling’s foundational paper in April 1953.',
 						sound:'applause'
 					},
 					{
-						check:(s,chars,items)=>chars.includes('rosalind_chemist')&&items.includes('double_helix_model')&&items.includes('baggage'),
-						solution:{setting:'cavendish_lab',characters:['rosalind_chemist'],items:['double_helix_model','baggage']},
-						title:'With scientific dignity and grace, Rosalind welcomes the confirmed model and departs for Birkbeck to pioneer virus research.',
+						check:(s,chars,items)=>exactMatch(null,chars,items,null,['rosalind_chemist'],['double_helix_model','baggage']),
+						solution:{setting:null,characters:['rosalind_chemist'],items:['double_helix_model','baggage']},
+						title:'With scientific dignity, Rosalind acknowledges the completed model and departs for Birkbeck to study viruses.',
 						sound:'goal_success'
 					}
 				],
@@ -613,7 +578,7 @@ const CHAPTERS_DATA=[
 					},
 					{
 						check:(s,chars,items)=>chars.includes('maurice_wilkins')&&chars.includes('james_watson')&&chars.includes('rosalind_chemist')&&items.includes('photo_51'),
-						text:'Hearing Rosalind’s footsteps, Wilkins and Watson panic and hurriedly hide Photo 51 behind their backs!',
+						text:'Hearing Rosalind’s footsteps, Wilkins and Watson panic and hide Photo 51 behind their backs!',
 						sound:'fail_thud'
 					}
 				]

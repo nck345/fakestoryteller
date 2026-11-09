@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded',()=>{
 	window.minigameCtrl.init(modalLayer);
 	window.codexCtrl.init(modalLayer);
 	window.cutsceneCtrl.init(modalLayer);
+	const initialAct=window.storyEngine.getCurrentAct();
+	window.uiCtrl.renderAct(initialAct);
+	window.storyEngine.evaluateAll();
 	const coverBtn=document.getElementById('coverOpenBtn');
 	if(coverBtn){
 		coverBtn.onclick=()=>{
@@ -10,6 +13,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 				window.audioMgr.ensureContext();
 				window.audioMgr.playSFX('button_click');
 			}
+			const coverScreen=document.getElementById('bookCoverScreen');
+			if(coverScreen) coverScreen.classList.add('hidden');
 			window.cutsceneCtrl.playTutorial();
 		};
 	}

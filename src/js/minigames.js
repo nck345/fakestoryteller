@@ -117,9 +117,21 @@ class MinigameController{
 					if(reached>=25){
 						status.innerHTML='<span style="color:#10b981;font-weight:bold;">Success! Active micropores verified: 100% molecular sieve absorption!</span>';
 						if(window.audioMgr) window.audioMgr.playSFX('goal_success');
+						window.storyEngine.unlockedMinigames.add('gas_lab');
+						if(window.storyEngine.framesState[1]){
+							window.storyEngine.framesState[1].gasLabSolved=true;
+							window.storyEngine.evaluateAll();
+						}
+						if(window.uiCtrl) window.uiCtrl.updateHeaderMinigames(window.storyEngine.getCurrentAct());
+						setTimeout(()=>this.close(),1600);
 					}else{
-						status.innerHTML='<span style="color:#ef4444;font-weight:bold;">Flow clogged! Adjust valve pressure between 45% - 65% for laminar molecular flow.</span>';
+						status.innerHTML='<span style="color:#ef4444;font-weight:bold;">Flow clogged! Hint: Adjust valve pressure between 45% - 65% for steady molecular flow.</span>';
 						if(window.audioMgr) window.audioMgr.playSFX('fail_thud');
+						if(window.storyEngine.framesState[1]){
+							window.storyEngine.framesState[1].gasLabSolved=false;
+							window.storyEngine.framesState[1].result={type:'fail',text:'Flow clogged! Hint: Adjust valve pressure between 45% - 65% for steady molecular flow.',anim:null,sound:'fail_thud',showQuestion:true};
+							window.storyEngine.emit('stateUpdated',{frames:window.storyEngine.framesState,isSolved:false});
+						}
 					}
 				}
 			};
@@ -181,6 +193,8 @@ class MinigameController{
 				diffView.style.filter='blur(0px)';
 				diffCross.style.opacity='1';
 				status.innerHTML='<span style="color:#10b981;font-weight:bold;">Focus Locked (180°)! High-order diffraction spots clearly resolved!</span>';
+				window.storyEngine.unlockedMinigames.add('xray_dial');
+				if(window.uiCtrl) window.uiCtrl.updateHeaderMinigames(window.storyEngine.getCurrentAct());
 			}else if(dist>8&&locked){
 				locked=false;
 				status.textContent='Blurry concentric halos. Rotate dial towards 180°.';
@@ -269,9 +283,15 @@ class MinigameController{
 			if(bathSeconds>=5.5&&bathSeconds<=9.5){
 				status.innerHTML='<span style="color:#10b981;font-weight:bold;">Photograph 51 developed with pristine clarity! The helical cross is indisputable.</span>';
 				if(window.audioMgr) window.audioMgr.playSFX('goal_success');
+				window.storyEngine.unlockedMinigames.add('darkroom');
+				if(window.uiCtrl) window.uiCtrl.updateHeaderMinigames(window.storyEngine.getCurrentAct());
 			}else{
-				status.innerHTML='<span style="color:#ef4444;font-weight:bold;">Plate spoiled by improper timing.</span>';
+				status.innerHTML='<span style="color:#ef4444;font-weight:bold;">Plate spoiled by improper timing. Hint: Agitate chemical bath for 6-8 seconds, then lift immediately.</span>';
 				if(window.audioMgr) window.audioMgr.playSFX('fail_thud');
+				if(window.storyEngine.getCurrentAct().id==='act4_4'&&window.storyEngine.framesState[2]){
+					window.storyEngine.framesState[2].result={type:'fail',text:'Plate spoiled! Hint: Agitate chemical bath for 6-8 seconds, then lift immediately.',sound:'fail_thud',showQuestion:true};
+					window.storyEngine.emit('stateUpdated',{frames:window.storyEngine.framesState,isSolved:false});
+				}
 			}
 			liftBtn.disabled=true;
 			agitateBtn.disabled=true;

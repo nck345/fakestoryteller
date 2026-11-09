@@ -18,7 +18,7 @@ class UIController{
 		const stampEl=document.getElementById('solvedStamp');
 		const chNameEl=document.getElementById('chapterName');
 		if(titleEl) titleEl.textContent=`Act ${act.actNumber}: ${act.title}`;
-		if(goalEl) goalEl.textContent=act.goal;
+		if(goalEl) goalEl.textContent=act.introText||act.goal;
 		if(chNameEl) chNameEl.textContent=window.storyEngine.getCurrentChapter().title;
 		if(stampEl) stampEl.classList.remove('visible');
 		this.renderFrames(act.framesCount);
@@ -31,15 +31,9 @@ class UIController{
 		const mgGas=document.getElementById('mgGasBtn');
 		const mgFocus=document.getElementById('mgFocusBtn');
 		const mgDark=document.getElementById('mgDarkBtn');
-		if(mgGas) mgGas.style.display='none';
-		if(mgFocus){
-			const showFocus=(act.id==='act3_3'||act.id==='act4_2'||act.id==='act4_3');
-			mgFocus.style.display=showFocus?'inline-flex':'none';
-		}
-		if(mgDark){
-			const showDark=(act.id==='act4_4');
-			mgDark.style.display=showDark?'inline-flex':'none';
-		}
+		if(mgGas) mgGas.style.display=window.storyEngine.unlockedMinigames.has('gas_lab')?'inline-flex':'none';
+		if(mgFocus) mgFocus.style.display=window.storyEngine.unlockedMinigames.has('xray_dial')?'inline-flex':'none';
+		if(mgDark) mgDark.style.display=window.storyEngine.unlockedMinigames.has('darkroom')?'inline-flex':'none';
 	}
 	renderFrames(count){
 		const container=document.getElementById('panelsRow');
@@ -58,10 +52,10 @@ class UIController{
 					<div class="frame-reaction-overlay"></div>
 					<div class="rosalind-speech hidden" id="speech_${i}">
 						<img src="assets/images/characters/rosalindfranklin.png" alt="Rosalind" class="speech-avatar">
-						<span>Rosalind: "Hãy thử làm thí nghiệm nhé!"</span>
+						<span>Rosalind: "Let's perform the experiment!"</span>
 					</div>
 				</div>
-				<div class="frame-caption">Kéo thả bối cảnh, nhân vật hoặc đồ vật vào đây...</div>
+				<div class="frame-caption">Drag and drop setting, characters or items here...</div>
 			`;
 			this.attachFrameEvents(frameEl,i);
 			container.appendChild(frameEl);
@@ -181,9 +175,15 @@ class UIController{
 					const card=STORY_CARDS[elId];
 					if(!card) return;
 					const spriteNode=document.createElement('div');
-					spriteNode.className='placed-entity-sprite';
-					spriteNode.title=`Bấm để gỡ ${card.name}`;
+					spriteNode.className=`placed-entity-sprite entity-${card.type} item-${card.id}`;
+					spriteNode.title=`Click to remove ${card.name}`;
 					spriteNode.innerHTML=`<img src="${card.image}" alt="${card.name}">`;
+					if(card.type==='character'&&f.result&&f.result.showQuestion){
+						const qBadge=document.createElement('div');
+						qBadge.className='char-question-mark';
+						qBadge.textContent='?';
+						spriteNode.appendChild(qBadge);
+					}
 					spriteNode.onclick=e=>{
 						e.stopPropagation();
 						window.storyEngine.removeElement(idx,elId);
@@ -201,17 +201,19 @@ class UIController{
 					frameEl.classList.add('state-success');
 				}
 			}else{
-				captionEl.textContent='Kéo thả bối cảnh, nhân vật hoặc đồ vật vào đây...';
+				captionEl.textContent='Drag and drop setting, characters or items here...';
 			}
 		});
 		const nextBtn=document.getElementById('nextActBtn');
 		if(nextBtn){
+			nextBtn.disabled=!data.isSolved;
 			if(data.isSolved){
 				nextBtn.classList.add('ready');
 			}else{
 				nextBtn.classList.remove('ready');
 			}
 		}
+		this.updateHeaderMinigames(window.storyEngine.getCurrentAct());
 	}
 	onGasLabTriggered(data){
 		const speech=document.getElementById(`speech_${data.frameIndex}`);
@@ -258,6 +260,7 @@ class UIController{
 		const chIdx=window.storyEngine.currentChapterIndex;
 		const actIdx=window.storyEngine.currentActIndex;
 		if(prevBtn) prevBtn.disabled=(chIdx===0&&actIdx===0);
+		if(nextBtn) nextBtn.disabled=!window.storyEngine.isActSolved;
 		this.renderTableOfContents();
 	}
 	renderTableOfContents(){
